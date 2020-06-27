@@ -1,7 +1,7 @@
 import 'package:fe_sektak/models/request.dart';
 import 'package:fe_sektak/models/user.dart';
 
-class Ride{
+class Ride {
   String rideID;
   User driver;
   List<User> passengers;
@@ -14,4 +14,7 @@ class Ride{
   DateTime rideTime;
   bool available;
   bool spam;
+
+  //initial input
+  Ride({this.driver, this.startPointLatitude, this.endPointLatitude});
 }
