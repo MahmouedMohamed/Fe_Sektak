@@ -1,7 +1,9 @@
+import 'package:fe_sektak/screens/home_screen.dart';
 import 'package:fe_sektak/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
+  static const String id ='Login_Screen';
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -119,7 +121,7 @@ class LoginScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10)),
                                 onPressed: () {
                                   Navigator.pop(context);
-                                  Navigator.pushNamed(context, 'home');
+                                  Navigator.pushNamed(context, HomeScreen.id);
                                 },
                               ),
                             ),

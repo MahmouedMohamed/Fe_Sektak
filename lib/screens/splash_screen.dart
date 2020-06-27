@@ -4,6 +4,7 @@ import 'package:toast/toast.dart';
 import 'login_screen.dart';
 
 class SplashPage extends StatefulWidget {
+  static const String id='splash_Screen';
   @override
   Splash createState() => new Splash();
 }
@@ -11,9 +12,9 @@ class SplashPage extends StatefulWidget {
 class Splash extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
-    return new SplashScreen(
+    return SplashScreen(
       seconds: 5,
-      navigateAfterSeconds: new LoginScreen(),
+      navigateAfterSeconds:  LoginScreen(),
       title: new Text('Fe Sektak',
           style: new TextStyle(
             fontWeight: FontWeight.bold,

@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const String id='Home_Screen';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   bool isCollapsed = true;
   double screenWidth, screenHeight;
   final Duration duration = const Duration(milliseconds: 300);
+
   AnimationController _animationController;
   Animation<double> _scaleAnimation;
   Animation<double> _menuScaleAnimation;
   Animation<Offset> _slideAnimation;
+
   @override
   void initState() {
     super.initState();
@@ -97,13 +99,13 @@ class _HomeScreenState extends State<HomeScreen>
                     IconButton(
                         icon: Icon(
                           Icons.settings,
-                          color: Colors.black,
+                          color: Colors.grey,
                         ),
                         padding: EdgeInsets.only(right: 10),
                         onPressed: () {}),
                   ],
                 ),
-                new PreferredSize(
+                 PreferredSize(
                     child: Padding(
                       padding: EdgeInsets.only(right: 20, left: 20),
                       child: Container(

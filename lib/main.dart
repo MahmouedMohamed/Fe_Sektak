@@ -13,14 +13,15 @@ class FeSektak extends StatelessWidget {
     return MaterialApp(
       title: 'Fe Sektak',
       debugShowCheckedModeBanner: false,
-      theme:
-          ThemeData(primaryColor: Colors.blue, accentColor: Color(0xFFFEF9EB)),
-      home: RideCreation(),
-      routes: <String, WidgetBuilder>{
-        "home": (BuildContext context) => HomeScreen(),
-        //add more routes here
-      },
-//      darkTheme: ThemeData.dark(),
+      theme: ThemeData(primaryColor: Colors.blue, accentColor: Color(0xFFFEF9EB)),
+      initialRoute: SplashPage.id,
+      routes:{
+        HomeScreen.id:(context)=>HomeScreen(),
+        LoginScreen.id:(context)=>LoginScreen(),
+        RideCreation.id:(context)=>RideCreation(),
+        SignupScreen.id:(context)=>SignupScreen(),
+        SplashPage.id:(context)=>SplashPage()
+      }
     );
   }
 }
