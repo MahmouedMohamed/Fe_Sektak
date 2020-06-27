@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-Widget textField(labelText, selectedIcon, selectedColor, status, type) {
+Widget textField(labelText, selectedIcon, selectedColor, status, type, controller) {
   return Padding(
     padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
     child: TextField(
+      controller: controller,
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(color: selectedColor),
