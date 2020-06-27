@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const String id='Home_Screen';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   bool isCollapsed = true;
   double screenWidth, screenHeight;
   final Duration duration = const Duration(milliseconds: 300);
@@ -29,8 +29,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void dispose() {
+//    _animationController.dispose();
     super.dispose();
-    _animationController.dispose();
   }
 
   @override
@@ -41,7 +41,9 @@ class _HomeScreenState extends State<HomeScreen>
     screenHeight = size.height;
     return Scaffold(
       body: Stack(
-        children: <Widget>[menu(context), home(context)],
+        children: <Widget>[
+          menu(context),
+          home(context)],
       ),
     );
   }
@@ -86,24 +88,18 @@ class _HomeScreenState extends State<HomeScreen>
                       },
                     ),
                   ),
-                  title: Text(
-                    'Looking for a Ride?',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Color.fromRGBO(0, 0, 0, 100000),
-                    ),
-                  ),
+                  title: Text("Fe Sektak",style: TextStyle(color: Colors.black),),
                   actions: <Widget>[
                     IconButton(
                         icon: Icon(
                           Icons.settings,
-                          color: Colors.black,
+                          color: Colors.grey,
                         ),
                         padding: EdgeInsets.only(right: 10),
                         onPressed: () {}),
                   ],
                 ),
-                new PreferredSize(
+                PreferredSize(
                     child: Padding(
                       padding: EdgeInsets.only(right: 20, left: 20),
                       child: Container(
@@ -167,7 +163,35 @@ class _HomeScreenState extends State<HomeScreen>
                       children: <Widget>[
                         Padding(
                             padding: EdgeInsets.only(
-                                top: screenHeight / 4, bottom: 30),
+                                top: 10, bottom: 30),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: ButtonTheme(
+                                child: RaisedButton(
+                                  onPressed: (){
+                                    Navigator.pushNamed(context, "createRequest");
+                                  },
+                                  color: Colors.lightBlue[200],
+                                  splashColor: Colors.blue,
+                                  focusColor: Colors.blue,
+                                  highlightColor: Colors.blue,
+                                  colorBrightness: Brightness.light,
+                                  child: Text('Looking for a Ride?',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          letterSpacing: 1.5,
+                                          fontWeight: FontWeight.bold)),
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30)),
+                                ),
+                                minWidth: 240,
+                              ),
+                            )),
+                        Padding(
+                            padding: EdgeInsets.only(
+                                top: 10, bottom: 30),
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: ButtonTheme(
@@ -196,7 +220,8 @@ class _HomeScreenState extends State<HomeScreen>
                   ],
                 ),
               ]))),
-        ));
+        )
+    );
   }
 
   Widget menu(context) {
@@ -237,6 +262,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ),
                       FloatingActionButton.extended(
+                        heroTag: "Profile",
                         label: Text('Profile'),
                         icon: Icon(
                           Icons.accessibility,
@@ -247,6 +273,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       SizedBox(height: 10),
                       FloatingActionButton.extended(
+                        heroTag: "My Rides",
                         label: Text('My Rides'),
                         icon: Icon(
                           Icons.directions_car,
@@ -257,6 +284,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       SizedBox(height: 10),
                       FloatingActionButton.extended(
+                        heroTag: "Contact",
                         label: Text(
                           'Contact Us',
                           softWrap: true,

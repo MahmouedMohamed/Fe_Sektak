@@ -9,7 +9,7 @@
   [GeneratedPluginRegistrant registerWithRegistry:self];
 
   // TODO: Add your API key
-  [GMSServices provideAPIKey: @"AIzaSyDzwwuHFfcazNEYoFDQC-P2hgwRfb1tJK4"];
+  [GMSServices provideAPIKey: @"AIzaSyCR_aFqmJMJyM8h95wzJfi1BjsCzb9hngo"];
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

@@ -1,6 +1,6 @@
 # fe_sektak
 
-A new Flutter application.
+A new Car Pooling application.
 
 ## Getting Started
 
