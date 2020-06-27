@@ -1,3 +1,4 @@
+import 'package:fe_sektak/screens/requestCreation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -169,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               child: ButtonTheme(
                                 child: RaisedButton(
                                   onPressed: (){
-                                    Navigator.pushNamed(context, "createRequest");
+                                    Navigator.pushNamed(context, RequestCreation.id);
                                   },
                                   color: Colors.lightBlue[200],
                                   splashColor: Colors.blue,

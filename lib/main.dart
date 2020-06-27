@@ -5,6 +5,8 @@ import 'package:fe_sektak/screens/signup_screen.dart';
 import 'package:fe_sektak/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'package:fe_sektak/screens/requestCreation_screen.dart';
+
 void main() => runApp(new FeSektak());
 
 class FeSektak extends StatelessWidget {
@@ -13,12 +15,15 @@ class FeSektak extends StatelessWidget {
     return MaterialApp(
       title: 'Fe Sektak',
       debugShowCheckedModeBanner: false,
-      theme:
-          ThemeData(primaryColor: Colors.blue, accentColor: Color(0xFFFEF9EB)),
-      home: RideCreation(),
+      theme: ThemeData(primaryColor: Colors.blue, accentColor: Color(0xFFFEF9EB)),
+      initialRoute: SplashPage.id,
       routes: <String, WidgetBuilder>{
-        "home": (BuildContext context) => HomeScreen(),
-        //add more routes here
+        HomeScreen.id:(context)=>HomeScreen(),
+        LoginScreen.id:(context)=>LoginScreen(),
+        RideCreation.id:(context)=>RideCreation(),
+        RequestCreation.id:(context)=>RequestCreation(),
+        SignupScreen.id:(context)=>SignupScreen(),
+        SplashPage.id:(context)=>SplashPage(),
       },
 //      darkTheme: ThemeData.dark(),
     );
