@@ -1,0 +1,6 @@
+Login page-> Register | Home Page
+Home Page -> Create Ride Page | Create Request Page | Profile Page | Notification Page | Page to show All up coming Rides "بتظهر الرحلات اللي هقوم بيها"
+Create Request Page -> Drivers Page 
+Notification Page -> لو اخترت واحدة من النوتفكيشن و ليكن نوتفكيشن ان سواق قبل إنك تركب معاه -> Meet point selection page
+اخر صفحة هي صفحة اللقاء بقي السواق و الراكب ظاهرين لبعض و كده -> Review Page
+
