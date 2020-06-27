@@ -1,9 +1,13 @@
+import 'package:fe_sektak/api_callers/get.dart';
+import 'package:fe_sektak/models/user.dart';
 import 'package:fe_sektak/screens/home_screen.dart';
 import 'package:fe_sektak/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
   static const String id ='Login_Screen';
+  TextEditingController email = new TextEditingController();
+  TextEditingController password = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -59,6 +63,7 @@ class LoginScreen extends StatelessWidget {
                           padding:
                               EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                           child: TextField(
+                            controller: email,
                             textAlign: TextAlign.center,
                             decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
@@ -75,7 +80,7 @@ class LoginScreen extends StatelessWidget {
                                 Icons.person,
                                 color: Colors.pinkAccent,
                               ),
-                              labelText: 'User Name:',
+                              labelText: 'Email',
                             ),
                           )),
                       SizedBox(
@@ -85,6 +90,7 @@ class LoginScreen extends StatelessWidget {
                           padding:
                               EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                           child: TextField(
+                            controller: password,
                             obscureText: true,
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.center,
@@ -101,7 +107,7 @@ class LoginScreen extends StatelessWidget {
                                 Icons.lock,
                                 color: Colors.pinkAccent,
                               ),
-                              labelText: 'Password :',
+                              labelText: 'Password',
                             ),
                           )),
                       SizedBox(
@@ -119,9 +125,11 @@ class LoginScreen extends StatelessWidget {
                                 colorBrightness: Brightness.light,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.pushNamed(context, HomeScreen.id);
+                                onPressed: () async {
+                                  User user = await getUser(email,password);
+                                  /// Save user to Shared Preference
+                                  /// Create Session
+                                  /// Navigate to Home Page
                                 },
                               ),
                             ),
@@ -160,13 +168,18 @@ class LoginScreen extends StatelessWidget {
                                   fontSize: 12,
                                 ),
                               ),
-                              Text(
-                                'Join Us Now!',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.greenAccent,
-                                  fontSize: 15,
+                              GestureDetector(
+                                child: Text(
+                                  'Join Us Now!',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.greenAccent,
+                                    fontSize: 15,
+                                  ),
                                 ),
+                                onTap: (){
+                                  Navigator.pushNamed(context, SignupScreen.id);
+                                },
                               ),
                             ],
                           ))

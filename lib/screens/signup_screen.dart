@@ -1,11 +1,10 @@
 import 'dart:io';
-
-import 'package:connection_status_bar/connection_status_bar.dart';
+import 'package:fe_sektak/api_callers/post.dart';
+import 'package:fe_sektak/models/car.dart';
 import 'package:fe_sektak/widgets/text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobile_vision/flutter_mobile_vision.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-
 class SignupScreen extends StatefulWidget {
   static const String id='SignUp_Screen';
   @override
@@ -13,56 +12,33 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  List<String> countries = ['Egypt'];
-  List<DropdownMenuItem<String>> _dropDownMenuItems;
-  String _selectedCountry;
   bool hasCar = false;
-  Future<File> imageFile;
-  String _path = "";
+  File carImage;
+  File idImage;
+  TextEditingController fullName = new TextEditingController();
+  TextEditingController nationalId = new TextEditingController();
+  TextEditingController email = new TextEditingController();
+  TextEditingController password = new TextEditingController();
+  TextEditingController mobileNumber = new TextEditingController();
+  TextEditingController carNumber = new TextEditingController();
+  TextEditingController carColor = new TextEditingController();
+  TextEditingController carModel = new TextEditingController();
+  TextEditingController licenceId = new TextEditingController();
   Future<File> pickImageFromGallery(ImageSource source) {
-    return imageFile = ImagePicker.pickImage(source: source);
+    return ImagePicker.pickImage(source: source);
   }
 
-  _getPath(ImageSource source) async {
-    final file =
-        await pickImageFromGallery(source); // the method return Future<File>
-    setState(() {
-      _path = file.path;
-    });
-  }
-
-  Widget showImage() {
-    return FutureBuilder<File>(
-      future: imageFile,
-      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.data != null) {
-//          return Image.file(
-//            snapshot.data,
-//            width: 300,
-//            height: 300,
-//          );
-          return Text('${_path}');
-        } else if (snapshot.error != null) {
-          return const Text(
-            'Error Picking Image',
-            textAlign: TextAlign.center,
-          );
-        } else {
-          return const Text(
-            'No Image Selected',
-            textAlign: TextAlign.center,
-          );
-        }
-      },
-    );
+  getPath(kind,ImageSource source) async {
+    kind=='car'?
+    this.carImage =
+        await pickImageFromGallery(source):
+    this.idImage =
+        await pickImageFromGallery(source);
   }
 
   @override
   void initState() {
     super.initState();
-    _dropDownMenuItems = buildDropDownMenuItems(countries);
-    _selectedCountry = _dropDownMenuItems[0].value;
   }
 
   void onChange(bool status) {
@@ -99,81 +75,88 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Wrap(
           alignment: WrapAlignment.center,
           children: [
-            ConnectionStatusBar(),
             Image.asset(
               'assets/images/road.png',
               alignment: Alignment.topCenter,
               fit: BoxFit.scaleDown,
               scale: 2.5,
             ),
-            textField('Full name', Icons.person, Colors.blue, false, null),
-            textField('Email', Icons.email, Colors.blue, false, null),
-            textField('Password', Icons.lock, Colors.blue, true, null),
+            textField('Full name', Icons.person, Colors.blue, false, null,fullName),
+            textField('Email', Icons.email, Colors.blue, false, null,email),
+            textField('Password', Icons.lock, Colors.blue, true, null,password),
             textField('Mobile Number', Icons.mobile_screen_share, Colors.blue,
-                false, TextInputType.number),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-              Text('Country :'),
-              SizedBox(
-                width: 10,
-              ),
-              DropdownButton(
-                value: _selectedCountry,
-                items: _dropDownMenuItems,
-                onChanged: onChangedDropdownItem,
-                icon: Icon(Icons.arrow_drop_down),
-              )
-            ]),
+                false, TextInputType.number,mobileNumber),
+            textField('National ID', Icons.mobile_screen_share, Colors.blue,
+                false, TextInputType.number,nationalId),
             CheckboxListTile(
-              title: Text('Has a Car? '),
+              title: Text('Have a Car? '),
               value: hasCar,
               onChanged: onChange,
               secondary: const Icon(Icons.directions_car),
-              subtitle: Text('Yes'),
               controlAffinity: ListTileControlAffinity.leading,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
                 Visibility(
-                  child: RaisedButton(
-                    child: Text("Select Image from Gallery"),
-                    onPressed: () {
-//                    _getPath(ImageSource.gallery);           /////////////////////////////to begin in back end
+                  child: Column(
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text("Upload Car ID from Gallery"),
+                    onPressed: () async {
+                      getPath('car',ImageSource.gallery);           /////////////////////////////to begin in back end
                     },
+                  ),
+                  textField('Licence ID', Icons.directions_car, Colors.blue, false, null,licenceId),
+                  textField('Car Number', Icons.directions_car, Colors.blue, false, null,carNumber),
+                  textField('Car Color', Icons.color_lens, Colors.blue, false, null,carColor),
+                  textField('Car Model', Icons.local_car_wash, Colors.blue, false, null,carModel),
+                ],
                   ),
                   visible: hasCar ? true : false,
                 ),
 //                showImage()                      /////////////////////////////to begin in back end
-              ],
-            ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 IconButton(
                   icon: Icon(
                     Icons.file_upload,
-                    semanticLabel: 'haffd',
                   ),
                   onPressed: () {
-//                    _getPath(ImageSource.gallery);           /////////////////////////////to begin in back end
+                    getPath('id',ImageSource.gallery);           /////////////////////////////to begin in back end
                   },
                 ),
                 Text('Click Here To upload Your National ID'),
               ],
             ),
             RaisedButton(
-              onPressed: () {},
+              onPressed: () async {
+                String status= await register(
+                  fullName.text,
+                  email.text,
+                  password.text,
+                  mobileNumber.text,
+                  nationalId.text,
+                  licenceId.text,
+                  new Car(
+                    carNumber.text,
+                    carColor.text,
+                    carModel.text
+                  ),
+                  carImage,
+                  idImage
+                );
+                if(status=='done'){
+                  /// Navigate to login page
+                }
+                else{
+                  /// Toast Or Show Errors
+                }
+              },
               child: Text('Signup'),
             )
           ],
         ),
       ))),
     );
-  }
-
-  onChangedDropdownItem(String selectedCountry) {
-    setState(() {
-      _selectedCountry = selectedCountry;
-    });
   }
 }

@@ -138,26 +138,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             letterSpacing: 1),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 3),
-                      child: Text(
-                        'You have been involved in 4 Rides Until Now',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.blue, fontSize: 25, letterSpacing: 1),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 3),
-                      child: Text(
-                        'Keep it going!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 25,
-                            letterSpacing: 1),
-                      ),
-                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -190,6 +170,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                 minWidth: 240,
                               ),
                             )),
+                        /// if Session's User has Car? Show this
                         Padding(
                             padding: EdgeInsets.only(
                                 top: 10, bottom: 30),
@@ -272,10 +253,24 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         splashColor: Colors.blue,
                         onPressed: () {},
                       ),
+
+                      /// If Session's User has car? Show this
                       SizedBox(height: 10),
                       FloatingActionButton.extended(
                         heroTag: "My Rides",
                         label: Text('My Rides'),
+                        icon: Icon(
+                          Icons.directions_car,
+                          size: 30,
+                        ),
+                        splashColor: Colors.limeAccent,
+                        onPressed: () {},
+                      ),
+
+                      SizedBox(height: 10),
+                      FloatingActionButton.extended(
+                        heroTag: "My Requests",
+                        label: Text('My Requests'),
                         icon: Icon(
                           Icons.directions_car,
                           size: 30,
@@ -300,7 +295,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       ),
                       SizedBox(height: 50),
                       FlatButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          /// Clear Session
+                          /// Navigate to Login page
+                        },
                         icon: Icon(
                           Icons.exit_to_app,
                           size: 30,

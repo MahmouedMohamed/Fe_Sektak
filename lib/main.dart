@@ -19,7 +19,7 @@ class FeSektak extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme:
           ThemeData(primaryColor: Colors.blue, accentColor: Color(0xFFFEF9EB)),
-      initialRoute: Requests.id,
+      initialRoute: HomeScreen.id,
       routes: <String, WidgetBuilder>{
         HomeScreen.id: (context) => HomeScreen(),
         LoginScreen.id: (context) => LoginScreen(),
