@@ -1,25 +1,22 @@
-import 'package:fe_sektak/models/user_location.dart';
-import 'package:flutter/cupertino.dart';
-
 import 'car.dart';
-import 'request.dart';
 
 class User {
-  String UID;
-  String nationalID;
+  String id;
+  String nationalId;
   String name;
+  String email;
+  String phoneNumber;
   String licenseID;
   Car car;
-  UserLocation userLocation;
-  List<Request> request;
-  String UPhoto;
+  String uPhoto;
   User(
-      {this.UID,
-      this.nationalID,
-      this.name,
-      this.licenseID,
-      this.car,
-      this.userLocation,
-      this.request,
-      this.UPhoto});
+  {this.id,
+        this.nationalId,
+        this.name,
+        this.email,
+        this.phoneNumber,
+        this.licenseID,
+        this.car,
+        this.uPhoto
+});
 }

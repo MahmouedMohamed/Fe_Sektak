@@ -2,9 +2,8 @@ import 'package:fe_sektak/models/request.dart';
 import 'package:fe_sektak/models/user.dart';
 
 class Ride {
-  String rideID;
+  String rideId;
   User driver;
-  List<User> passengers;
   List<Request> requests;
   double startPointLatitude;
   double startPointLongitude;
@@ -16,5 +15,16 @@ class Ride {
   bool spam;
 
   //initial input
-  Ride({this.driver, this.startPointLatitude, this.endPointLatitude});
+  Ride({
+    this.rideId,
+    this.driver,
+    this.requests,
+    this.startPointLatitude,
+    this.startPointLongitude,
+    this.endPointLatitude,
+    this.endPointLongitude,
+    this.numberOfNeededSeats,
+    this.rideTime,
+    this.available
+  });
 }
