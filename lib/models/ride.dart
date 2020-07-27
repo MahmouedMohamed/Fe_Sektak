@@ -9,7 +9,7 @@ class Ride {
   double startPointLongitude;
   double endPointLatitude;
   double endPointLongitude;
-  int numberOfNeededSeats;
+  int availableSeats;
   DateTime rideTime;
   bool available;
   bool spam;
@@ -23,7 +23,7 @@ class Ride {
     this.startPointLongitude,
     this.endPointLatitude,
     this.endPointLongitude,
-    this.numberOfNeededSeats,
+    this.availableSeats,
     this.rideTime,
     this.available
   });

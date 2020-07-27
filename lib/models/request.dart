@@ -8,8 +8,8 @@ class Request{
   double startPointLongitude;
   double endPointLatitude;
   double endPointLongitude;
-  bool spam;
   MeetPoint meetPoint;
+  bool spam;
 
   Request({this.requestId,this.passenger, this.numberOfNeededSeats, this.startPointLatitude,
       this.startPointLongitude, this.endPointLatitude, this.endPointLongitude,

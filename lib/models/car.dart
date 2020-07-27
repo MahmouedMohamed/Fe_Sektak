@@ -1,6 +1,10 @@
 class Car{
   String carLicenseId;
-  String type;
+  String carModel;
   String color;
-  Car(this.carLicenseId,this.type,this.color);
+  Car(this.carLicenseId,this.carModel,this.color);
+
+  toList() {
+    return [carLicenseId,carModel,color];
+  }
 }

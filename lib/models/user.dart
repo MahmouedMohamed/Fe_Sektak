@@ -6,17 +6,29 @@ class User {
   String name;
   String email;
   String phoneNumber;
-  String licenseID;
+  String licenseId;
   Car car;
   String uPhoto;
   User(
-  {this.id,
-        this.nationalId,
-        this.name,
-        this.email,
-        this.phoneNumber,
-        this.licenseID,
-        this.car,
-        this.uPhoto
-});
+      {this.id,
+      this.nationalId,
+      this.name,
+      this.email,
+      this.phoneNumber,
+      this.licenseId,
+      this.car,
+      this.uPhoto});
+
+  List<String> toList() {
+    return [
+      id,
+      nationalId,
+      name,
+      email,
+      phoneNumber,
+      licenseId,
+      car.toList(),
+      uPhoto
+    ];
+  }
 }
