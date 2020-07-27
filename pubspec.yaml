@@ -23,6 +23,8 @@ dependencies:
 #  video_player: ^0.10.0
 #  pedantic: ^1.8.0
 #  image_gallery: ^1.2.0
+
+  shared_preferences: ^0.5.7
   image_picker: ^0.6.5
   flutter_mobile_vision: ^0.1.4+1
   dio: ^3.0.9
