@@ -1,3 +1,5 @@
+import 'package:fe_sektak/api_callers/api_caller.dart';
+import 'package:fe_sektak/api_callers/ride_api.dart';
 import 'package:fe_sektak/models/user.dart';
 import 'package:flutter/material.dart';
 
@@ -52,6 +54,23 @@ class RideSelectionScreen extends StatefulWidget {
 class _RideSelectionScreen extends State<RideSelectionScreen> {
   Request request;
   _RideSelectionScreen(this.request);
+  ApiCaller apiCaller = new RideApi();
+  List<Ride> rides;
+  initializeRides() async {
+    rides = await apiCaller.getAll(
+      requestData: {
+        'startPointLatitude' : request.startPointLatitude,
+        'startPointLongitude' : request.startPointLongitude,
+        'endPointLatitude' : request.endPointLatitude,
+        'endPointLongitude' : request.endPointLongitude,
+        'numberOfNeededSeats' : request.numberOfNeededSeats,
+      }
+    );
+  }
+  @override
+  void initState() {
+    super.initState();
+  }
   final List<Ride> _rides = [
     Ride(
         driver: User(name: 'shahed', uPhoto: 'direction'),

@@ -12,7 +12,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool hasCar = false;
-  TextEditingController fullName = new TextEditingController();
+  TextEditingController name = new TextEditingController();
   TextEditingController nationalId = new TextEditingController();
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
@@ -69,7 +69,7 @@ class _SignupScreenState extends State<SignupScreen> {
               scale: 2.5,
             ),
             textField(
-                'Full name', Icons.person, Colors.blue, false, null, fullName),
+                'Full name', Icons.person, Colors.blue, false, null, name),
             textField('Email', Icons.email, Colors.blue, false, null, email),
             textField(
                 'Password', Icons.lock, Colors.blue, true, null, password),
@@ -108,7 +108,7 @@ class _SignupScreenState extends State<SignupScreen> {
             RaisedButton(
               onPressed: () async {
                 String status = await apiCaller.create(userData: {
-                  'fullName': fullName.text,
+                  'name': name.text,
                   'email': email.text,
                   'password': password.text,
                   'phoneNumber': mobileNumber.text,
