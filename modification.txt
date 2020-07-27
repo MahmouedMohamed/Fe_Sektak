@@ -1,0 +1,13 @@
+*1- Modify models
+*2- Meet point will be created in request creation form and that request will all it got will be sent for rides
+*3- Images will be removed 
+
+
+
+
+
+
+// add license id in user table
+// requests table should have meetpoint lat and meetpoint longitude(double) instead of string meetpoint + destination
+// separate meetpoint to a seperated table that would have lat and lng points, meeting time, refer to request id
+// rides table should have destination lat and destination longitude(double) instead of string destination + start
