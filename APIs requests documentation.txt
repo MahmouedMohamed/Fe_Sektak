@@ -27,3 +27,5 @@ all up Coming rides تناسب request فلانية API -> 'suitableRides' -> ه
 														'endPoint':{'lat':lat,'lng':lng},'availableSeats':..,
 														'rideTime':..,
 														'available':.which will be true if numberOfSeats needed isn't full.}
+
+create ride -> 'ride' -> {'userId'-> سترنج,'startPointLatitude','startPointLongitude','endPointLatitude','endPointLongitude'-> دبل,availableSeats','date'-> تاريخ,'time'->وقت,'available'->true} كلهم مبعوتين سترنج لازم يتحولوا -> return {'status' : 'done' or 'undone'}
