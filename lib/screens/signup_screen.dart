@@ -1,41 +1,28 @@
-import 'dart:io';
-import 'package:fe_sektak/api_callers/post.dart';
-import 'package:fe_sektak/models/car.dart';
+import 'package:fe_sektak/screens/login_screen.dart';
+import 'package:fe_sektak/api_callers/api_caller.dart';
+import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/widgets/text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobile_vision/flutter_mobile_vision.dart';
-import 'package:image_picker/image_picker.dart';
+
 class SignupScreen extends StatefulWidget {
-  static const String id='SignUp_Screen';
+  static const String id = 'SignUp_Screen';
   @override
   _SignupScreenState createState() => _SignupScreenState();
 }
 
 class _SignupScreenState extends State<SignupScreen> {
   bool hasCar = false;
-  File carImage;
-  File idImage;
   TextEditingController fullName = new TextEditingController();
   TextEditingController nationalId = new TextEditingController();
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
   TextEditingController mobileNumber = new TextEditingController();
-  TextEditingController carNumber = new TextEditingController();
+  TextEditingController carLicense = new TextEditingController();
   TextEditingController carColor = new TextEditingController();
   TextEditingController carModel = new TextEditingController();
   TextEditingController licenceId = new TextEditingController();
-  Future<File> pickImageFromGallery(ImageSource source) {
-    return ImagePicker.pickImage(source: source);
-  }
 
-  getPath(kind,ImageSource source) async {
-    kind=='car'?
-    this.carImage =
-        await pickImageFromGallery(source):
-    this.idImage =
-        await pickImageFromGallery(source);
-  }
-
+  ApiCaller apiCaller = new UserApi();
   @override
   void initState() {
     super.initState();
@@ -81,13 +68,15 @@ class _SignupScreenState extends State<SignupScreen> {
               fit: BoxFit.scaleDown,
               scale: 2.5,
             ),
-            textField('Full name', Icons.person, Colors.blue, false, null,fullName),
-            textField('Email', Icons.email, Colors.blue, false, null,email),
-            textField('Password', Icons.lock, Colors.blue, true, null,password),
+            textField(
+                'Full name', Icons.person, Colors.blue, false, null, fullName),
+            textField('Email', Icons.email, Colors.blue, false, null, email),
+            textField(
+                'Password', Icons.lock, Colors.blue, true, null, password),
             textField('Mobile Number', Icons.mobile_screen_share, Colors.blue,
-                false, TextInputType.number,mobileNumber),
+                false, TextInputType.number, mobileNumber),
             textField('National ID', Icons.mobile_screen_share, Colors.blue,
-                false, TextInputType.number,nationalId),
+                false, TextInputType.number, nationalId),
             CheckboxListTile(
               title: Text('Have a Car? '),
               value: hasCar,
@@ -95,60 +84,44 @@ class _SignupScreenState extends State<SignupScreen> {
               secondary: const Icon(Icons.directions_car),
               controlAffinity: ListTileControlAffinity.leading,
             ),
-                Visibility(
-                  child: Column(
+            Visibility(
+              child: Column(
                 children: <Widget>[
-                  RaisedButton(
-                    child: Text("Upload Car ID from Gallery"),
-                    onPressed: () async {
-                      getPath('car',ImageSource.gallery);           /////////////////////////////to begin in back end
-                    },
-                  ),
-                  textField('Licence ID', Icons.directions_car, Colors.blue, false, null,licenceId),
-                  textField('Car Number', Icons.directions_car, Colors.blue, false, null,carNumber),
-                  textField('Car Color', Icons.color_lens, Colors.blue, false, null,carColor),
-                  textField('Car Model', Icons.local_car_wash, Colors.blue, false, null,carModel),
+                  textField('Licence ID', Icons.directions_car, Colors.blue,
+                      false, null, licenceId),
+                  textField('Car Number', Icons.directions_car, Colors.blue,
+                      false, null, carLicense),
+                  textField('Car Color', Icons.color_lens, Colors.blue, false,
+                      null, carColor),
+                  textField('Car Model', Icons.local_car_wash, Colors.blue,
+                      false, null, carModel),
                 ],
-                  ),
-                  visible: hasCar ? true : false,
-                ),
-//                showImage()                      /////////////////////////////to begin in back end
-
+              ),
+              visible: hasCar ? true : false,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.file_upload,
-                  ),
-                  onPressed: () {
-                    getPath('id',ImageSource.gallery);           /////////////////////////////to begin in back end
-                  },
-                ),
                 Text('Click Here To upload Your National ID'),
               ],
             ),
             RaisedButton(
               onPressed: () async {
-                String status= await register(
-                  fullName.text,
-                  email.text,
-                  password.text,
-                  mobileNumber.text,
-                  nationalId.text,
-                  licenceId.text,
-                  new Car(
-                    carNumber.text,
-                    carColor.text,
-                    carModel.text
-                  ),
-                  carImage,
-                  idImage
-                );
-                if(status=='done'){
-                  /// Navigate to login page
-                }
-                else{
+                String status = await apiCaller.create(userData: {
+                  'fullName': fullName.text,
+                  'email': email.text,
+                  'password': password.text,
+                  'phoneNumber': mobileNumber.text,
+                  'nationalId': nationalId.text,
+                  'licenceId': licenceId.text,
+                }, carData: {
+                  'carLicenseId': carLicense.text,
+                  'carModel': carModel.text,
+                  'color': carColor.text,
+                });
+                if (status == 'done') {
+                  Navigator.popAndPushNamed(context, LoginScreen.id);
+                } else {
                   /// Toast Or Show Errors
                 }
               },

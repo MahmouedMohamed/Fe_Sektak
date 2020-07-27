@@ -2,7 +2,7 @@ import 'package:fe_sektak/models/request.dart';
 import 'package:fe_sektak/screens/home_screen.dart';
 import 'package:fe_sektak/screens/login_screen.dart';
 import 'package:fe_sektak/screens/rideCreation_screen.dart';
-import 'package:fe_sektak/screens/send_request.dart';
+import 'package:fe_sektak/screens/ride_selector.dart';
 import 'package:fe_sektak/screens/signup_screen.dart';
 import 'package:fe_sektak/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class FeSektak extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme:
           ThemeData(primaryColor: Colors.blue, accentColor: Color(0xFFFEF9EB)),
-      initialRoute: HomeScreen.id,
+      initialRoute: RequestCreation.id,
       routes: <String, WidgetBuilder>{
         HomeScreen.id: (context) => HomeScreen(),
         LoginScreen.id: (context) => LoginScreen(),
@@ -27,7 +27,7 @@ class FeSektak extends StatelessWidget {
         RequestCreation.id: (context) => RequestCreation(),
         SignupScreen.id: (context) => SignupScreen(),
         SplashPage.id: (context) => SplashPage(),
-        Requests.id: (context) => Requests(),
+        RideSelector.id: (context) => RideSelector(request: null,),
       },
 //      darkTheme: ThemeData.dark(),
     );

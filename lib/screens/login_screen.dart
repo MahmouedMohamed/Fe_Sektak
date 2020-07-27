@@ -1,13 +1,17 @@
-import 'package:fe_sektak/api_callers/get.dart';
+import 'package:fe_sektak/api_callers/api_caller.dart';
+import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/models/user.dart';
 import 'package:fe_sektak/screens/home_screen.dart';
 import 'package:fe_sektak/screens/signup_screen.dart';
+import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
   static const String id ='Login_Screen';
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
+  ApiCaller apiCaller = new UserApi();
+  SessionManager sessionManager = new SessionManager();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -126,10 +130,11 @@ class LoginScreen extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
                                 onPressed: () async {
-                                  User user = await getUser(email,password);
-                                  /// Save user to Shared Preference
-                                  /// Create Session
-                                  /// Navigate to Home Page
+                                  User user = await apiCaller.get(userData : {'email' : email,'password' : password});
+                                  if(user!=null){
+                                    sessionManager.createSession(user);
+                                    Navigator.popAndPushNamed(context, HomeScreen.id);
+                                  }
                                 },
                               ),
                             ),
