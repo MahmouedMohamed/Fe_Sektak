@@ -1,3 +1,6 @@
+import 'package:fe_sektak/api_callers/api_caller.dart';
+import 'package:fe_sektak/api_callers/ride_api.dart';
+import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -16,17 +19,19 @@ class RideCreation extends StatefulWidget {
 class _RideCreationState extends State<RideCreation> {
   GoogleMap googleMap;
   UserLocation userLocation;
-  List<ModifiedMarker> _markers;
+  List<ModifiedMarker> markers;
   MarkerIcon markerOption;
   DateTime selectedDate;
   TimeOfDay selectedTime;
   NumberPicker integerNumberPicker;
   int _currentIntValue = 0;
+  ApiCaller apiCaller = new RideApi();
+  SessionManager sessionManager = new SessionManager();
   @override
   void initState() {
     super.initState();
     userLocation = new UserLocation();
-    _markers = List<ModifiedMarker>();
+    markers = List<ModifiedMarker>();
     markerOption = new MarkerIcon();
     selectedDate = DateTime.now();
     selectedTime = TimeOfDay.now();
@@ -55,9 +60,9 @@ class _RideCreationState extends State<RideCreation> {
     if (userLocation.getLatLng() == null) {
       await userLocation.getUserLocation();
     }
-    Set<Marker> markers = Set();
-    for (int i = 0; i < _markers.length; i++) {
-      markers.add(_markers[i].getMarker());
+    Set<Marker> _markers = Set();
+    for (int i = 0; i < markers.length; i++) {
+      _markers.add(markers[i].getMarker());
     }
     return googleMap = GoogleMap(
       mapType: MapType.normal,
@@ -65,7 +70,7 @@ class _RideCreationState extends State<RideCreation> {
           target: LatLng(userLocation.getLatLng().latitude,
               userLocation.getLatLng().longitude),
           zoom: 18),
-      markers: Set<Marker>.of(markers),
+      markers: Set<Marker>.of(_markers),
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
       },
@@ -195,7 +200,21 @@ class _RideCreationState extends State<RideCreation> {
                     child: RaisedButton.icon(
                       icon: Icon(Icons.arrow_forward),
                       label: Text('Create Ride'),
-                      onPressed: () {},
+                      onPressed: () {
+                        apiCaller.create(
+                          rideData: {
+                            'startPointLatitude' : markers[0].getMarker().position.latitude,
+                            'startPointLongitude' : markers[0].getMarker().position.longitude,
+                            'endPointLatitude' : markers[1].getMarker().position.latitude,
+                            'endPointLongitude' : markers[1].getMarker().position.longitude,
+                            'availableSeats' : integerNumberPicker,
+                            'date' : selectedDate,
+                            'time' : selectedTime,
+                            'available' : true,
+                          },
+                          userData: {'userId' : sessionManager.getUser().id}
+                        );
+                      },
                     ),
                   )
                 ]),
@@ -238,7 +257,7 @@ class _RideCreationState extends State<RideCreation> {
   }
 
   Future<void> addTwoMarker() async {
-    final int markerCount = _markers.length;
+    final int markerCount = markers.length;
     if (markerCount == 2) {
       return;
     }
@@ -268,16 +287,16 @@ class _RideCreationState extends State<RideCreation> {
               : BitmapDescriptor.defaultMarkerWithHue(
                   BitmapDescriptor.hueGreen));
       setState(() {
-        _markers.add(ModifiedMarker(marker));
+        markers.add(ModifiedMarker(marker));
       });
     }
   }
 
   void _onMarkerDragEnd(MarkerId markerId, LatLng newPosition) async {
-    for (int i = 0; i < _markers.length; i++) {
-      if (_markers.elementAt(i).getMarker().markerId == markerId) {
+    for (int i = 0; i < markers.length; i++) {
+      if (markers.elementAt(i).getMarker().markerId == markerId) {
         setState(() {
-          _markers.elementAt(i).onMarkerDragEnd(newPosition);
+          markers.elementAt(i).onMarkerDragEnd(newPosition);
         });
         break;
       }

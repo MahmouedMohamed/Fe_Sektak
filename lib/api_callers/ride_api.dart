@@ -14,11 +14,27 @@ import 'user_api.dart';
 
 class RideApi implements ApiCaller {
   @override
-  create({userData,carData}) {
-    // TODO: implement create
-    throw UnimplementedError();
+  create({userData,carData,rideData}) async {
+    var body = {
+      'userId': userData['userId'],
+      'startPointLatitude': rideData['startPointLatitude'].toString(),
+      'startPointLongitude': rideData['startPointLongitude'].toString(),
+      'endPointLatitude': rideData['endPointLatitude'].toString(),
+      'endPointLongitude': rideData['endPointLongitude'].toString(),
+      'availableSeats': rideData['availableSeats'].toString(),
+      'date': rideData['date'].toString(),
+      'time': rideData['time'].toString(),
+      'available': true.toString(),
+    };
+    var response = await http.post(Uri.encodeFull(URL + 'ride'),
+        headers: {"Accpet": "application/json"}, body: body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      var convertDataToJson = jsonDecode(response.body);
+      return convertDataToJson['status'];
+    }
   }
-
   @override
   delete({userData}) {
     // TODO: implement delete

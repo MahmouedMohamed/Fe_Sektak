@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 class UserApi implements ApiCaller {
   @override
-  create({userData,carData}) async {
+  create({userData,carData,rideData}) async {
     var body = {
       'name': userData['name'].toString(),
       'email': userData['email'].toString(),
