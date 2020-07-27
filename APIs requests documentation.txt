@@ -1,22 +1,29 @@
-register API -> 'register' -> 	'fullName': fullName, -> required                           -> return {'status':'done'} if done, errors if not
+register API -> 'register' -> 	'name': name, -> required                           -> return {'status':'done'} if done, errors if not
      				'email': email, ->required , unique
      				'password': password, ->required
-     				'mobileNumber': mobileNumber, ->required , number, unique
+     				'phoneNumber': phoneNumber, ->required , number, unique
 				'nationalId' : nationalId, ->required, number,unique
 				'licenceId' : licenceId, -> nullable, unique
      				'car': [carLicenseId,carType,carColor] -> can be null
-     				'carImage': carImage, -> file, nullable
-     				'idImage': idIamge, ->file , required
 
 login API -> 'login' -> 'email': email					->return User Object with associated car info if any if done, errors if not
-			'password' : password  				user : {'id':id,'fullName':fullName,'nationalId': .. ,
-										'email':.. ,'phoneNumber': .. , 'licenceId': ..,
+			'password' : password  				user : {'id':id,'name':name,'nationalId': .. ,
+										'email':.. ,'mobileNum': .. , 'licenceId': ..,
 										'uPhoto':.. ,'car':[carLicenceId,type,color]}
 
-all up Coming rides with their requests associated to specific user API -> 'rides' -> 'userId' : userId     -> return all up Coming rides associated with that user 
+all up Coming rides with their requests associated to specific user API -> 'allRides' -> 'userId' : userId     -> return all up Coming rides associated with that user 
 														rides {'id':id,'driver':driver,
 														'requests':[all requests Objects associated to ride holding user Object of each request & meet point if any],
 	request will look like -> 'requests':[{requestId,'passenger':{userObject of that request},numberOfNeededSeats,startLat,StartLng,EndLat,EndLng,'MeetPoint':{meet point object of that request if any},.another request.,..}]
 														'startPoint':{'lat':lat,'lng':lng},
-														'endPoint':{'lat':lat,'lng':lng},'numberOfNeededSeats':..,
-														'rideTime':..,'available':.which will be true if numberOfSeats needed isn't full.}
+														'endPoint':{'lat':lat,'lng':lng},'availableSeats':..,
+														'rideTime':..,
+														'available':.which will be true if numberOfSeats needed isn't full.}
+
+all up Coming rides تناسب request فلانية API -> 'suitableRides' -> هبعت ماب فيها 'startPointLatitude','startPointLongitude','endPointLatitude', 'endPointLongitude','numberOfNeededSeats',      
+														-> return all up Coming rides that suitable for specific request هرجع كل الرايد بس منغير الريكويستات 
+														rides {'id':id,'driver':driver,
+														'startPoint':{'lat':lat,'lng':lng},
+														'endPoint':{'lat':lat,'lng':lng},'availableSeats':..,
+														'rideTime':..,
+														'available':.which will be true if numberOfSeats needed isn't full.}

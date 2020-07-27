@@ -26,16 +26,10 @@ class RideApi implements ApiCaller {
   }
 
   @override
-  get({userData}) {
-    // TODO: implement get
-    throw UnimplementedError();
-  }
-
-  @override
-  getAll({userData}) async {
+  get({userData}) async {   ///////////get for specific user
     var body = {'userId': userData['userId']};
     List returnedRides = new List<Ride>();
-    var response = await http.post(Uri.encodeFull(URL + 'rides'),
+    var response = await http.post(Uri.encodeFull(URL + 'allRides'),
         headers: {"Accpet": "application/json"}, body: body);
     if (response.statusCode != 200) {
       return null;
@@ -48,15 +42,15 @@ class RideApi implements ApiCaller {
           List requests = ride['requests'];
           requests.forEach((request) async {
             User user =
-                await UserApi().get(userData: {'userId': request['userId']});
+            await UserApi().get(userData: {'userId': request['userId']});
             returnedRequests.add(new Request(
               requestId: request['requestId'],
               passenger: user,
               numberOfNeededSeats: request['numberOfNeededSeats'],
-              startPointLatitude: request['startPointLatitude'],
-              startPointLongitude: request['startPointLatitude'],
-              endPointLatitude: request['startPointLatitude'],
-              endPointLongitude: request['startPointLatitude'],
+              startPointLatitude: request['startLat'],
+              startPointLongitude: request['StartLng'],
+              endPointLatitude: request['EndLat'],
+              endPointLongitude: request['EndLng'],
               meetPoint: new MeetPoint(
                 meetPointId: request['MeetPoint'][0],
                 latitude: double.parse(request['meetPoint'][1]),
@@ -72,10 +66,45 @@ class RideApi implements ApiCaller {
             rideId: ride['id'],
             driver: ride['driver'],
             requests: returnedRequests,
-            startPointLatitude: ride['startPointLatitude'],
-            startPointLongitude: ride['startPointLongitude'],
-            endPointLatitude: ride['endPointLatitude'],
-            endPointLongitude: ride['endPointLongitude'],
+            startPointLatitude: ride['startPoint']['lat'],
+            startPointLongitude: ride['startPoint']['lng'],
+            endPointLatitude: ride['endPoint']['lat'],
+            endPointLongitude: ride['endPoint']['lng'],
+            availableSeats: ride['availableSeats'],
+            rideTime: ride['rideTime'],
+
+            /// Must be converted
+            available: bool.fromEnvironment(ride['available'])));
+      });
+    }
+    return returnedRides;
+  }
+
+  @override
+  getAll({userData,requestData}) async { ///////////get responding for request
+    var body = {
+      'startPointLatitude' : requestData['startPointLatitude'],
+      'startPointLongitude' : requestData['startPointLongitude'],
+      'endPointLatitude' : requestData['endPointLatitude'],
+      'endPointLongitude' : requestData['endPointLongitude'],
+      'numberOfNeededSeats' : requestData['numberOfNeededSeats'],
+    };
+    List returnedRides = new List<Ride>();
+    var response = await http.post(Uri.encodeFull(URL + 'suitableRides'),
+        headers: {"Accpet": "application/json"}, body: body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      var convertDataToJson = jsonDecode(response.body);
+      List rides = convertDataToJson['rides'];
+      rides.forEach((ride) {
+        returnedRides.add(new Ride(
+            rideId: ride['id'],
+            driver: ride['driver'],
+            startPointLatitude: ride['startPoint']['lat'],
+            startPointLongitude: ride['startPoint']['lng'],
+            endPointLatitude: ride['endPoint']['lat'],
+            endPointLongitude: ride['endPoint']['lng'],
             availableSeats: ride['availableSeats'],
             rideTime: ride['rideTime'],
 

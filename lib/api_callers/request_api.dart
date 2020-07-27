@@ -28,7 +28,7 @@ class RequestApi implements ApiCaller{
   }
 
   @override
-  getAll({userData}) {
+  getAll({userData,requestData}) {
     // TODO: implement getAll
     throw UnimplementedError();
   }

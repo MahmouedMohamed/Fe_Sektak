@@ -11,7 +11,7 @@ class UserApi implements ApiCaller {
   @override
   create({userData,carData}) async {
     var body = {
-      'fullName': userData['fullName'].toString(),
+      'name': userData['name'].toString(),
       'email': userData['email'].toString(),
       'password': userData['password'],
       'phoneNumber': userData['phoneNumber'].toString(),
@@ -46,7 +46,7 @@ class UserApi implements ApiCaller {
       var convertDataToJson = jsonDecode(response.body);
       User user = new User(
         id: convertDataToJson['user']['id'].toString(),
-        nationalId: convertDataToJson['user']['nationalID'],
+        nationalId: convertDataToJson['user']['nationalId'],
         name: convertDataToJson['user']['name'],
         email: convertDataToJson['user']['email'],
         phoneNumber: convertDataToJson['user']['mobileNum'],
@@ -65,7 +65,7 @@ class UserApi implements ApiCaller {
   }
 
   @override
-  getAll({userData}) {
+  getAll({userData,requestData}) {
     // TODO: implement getAll
     throw UnimplementedError();
   }
