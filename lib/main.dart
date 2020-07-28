@@ -8,10 +8,13 @@ import 'package:fe_sektak/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fe_sektak/screens/requestCreation_screen.dart';
+import 'package:fe_sektak/session/session_manager.dart';
 
+import 'screens/rides_screen.dart';
 void main() => runApp(new FeSektak());
 
 class FeSektak extends StatelessWidget {
+  SessionManager sessionManager = new SessionManager();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,14 +22,15 @@ class FeSektak extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme:
           ThemeData(primaryColor: Colors.blue, accentColor: Color(0xFFFEF9EB)),
-      initialRoute: RequestCreation.id,
+      initialRoute: SplashScreen.id,
       routes: <String, WidgetBuilder>{
         HomeScreen.id: (context) => HomeScreen(),
         LoginScreen.id: (context) => LoginScreen(),
         RideCreation.id: (context) => RideCreation(),
+        RideScreen.id: (context) => RideScreen(),
         RequestCreation.id: (context) => RequestCreation(),
         SignupScreen.id: (context) => SignupScreen(),
-        SplashPage.id: (context) => SplashPage(),
+        SplashScreen.id: (context) => SplashScreen(),
         RideSelector.id: (context) => RideSelector(request: null,),
       },
 //      darkTheme: ThemeData.dark(),

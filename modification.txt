@@ -4,6 +4,9 @@
 
 
 
+//make request -> saved in database 
+//show all requests
+//see available rides -> if there is accepted -> show it, else show suitable rides
 
 
 
@@ -11,3 +14,7 @@
 // requests table should have meetpoint lat and meetpoint longitude(double) instead of string meetpoint + destination
 // separate meetpoint to a seperated table that would have lat and lng points, meeting time, refer to request id
 // rides table should have destination lat and destination longitude(double) instead of string destination + start
+
+
+
+//request id , ride id , user_id  requestId and rideId cannot repeat
