@@ -19,22 +19,18 @@ class SessionManager {
   }
 
   loadSession() {
-//    sessionExpire =
-//        DateTime.parse(sharedPreferences.getString('sessionExpire'));
-//    if (sessionExpire.isBefore(DateTime.now())) {
-      logout();
-//    }
     List<String> userData = sharedPreferences.getStringList('user');
+    print(userData);
+//    logout();
     user = new User(
         id: userData[0],
         nationalId: userData[1],
         name: userData[2],
         email: userData[3],
         phoneNumber: userData[4],
-        licenseId: userData[5],
-        car: Car(userData[6][0], userData[6][1], userData[6][2]),
+        rate: userData[5],
+        car: Car(userData[6][0], userData[6][1], userData[6][2],userData[6][3]),
         uPhoto: userData[7]);
-//    oauthToken = sharedPreferences.getString('oauthToken');
   }
 
   createSession(User user) {
