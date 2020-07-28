@@ -1,5 +1,6 @@
 import 'package:fe_sektak/models/request.dart';
 import 'package:fe_sektak/models/user.dart';
+import 'package:flutter/material.dart';
 
 class Ride {
   String rideId;
@@ -10,7 +11,7 @@ class Ride {
   double endPointLatitude;
   double endPointLongitude;
   int availableSeats;
-  DateTime rideTime;
+  TimeOfDay rideTime;
   bool available;
   bool spam;
 

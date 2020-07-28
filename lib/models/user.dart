@@ -6,17 +6,17 @@ class User {
   String name;
   String email;
   String phoneNumber;
-  String licenseId;
   Car car;
   String uPhoto;
+  String rate;
   User(
       {this.id,
       this.nationalId,
       this.name,
       this.email,
       this.phoneNumber,
-      this.licenseId,
       this.car,
+      this.rate,
       this.uPhoto});
 
   List<String> toList() {
@@ -26,8 +26,8 @@ class User {
       name,
       email,
       phoneNumber,
-      licenseId,
-      car.toList(),
+      rate,
+      car==null? [null,null,null,null].toString() : car.toList().toString(),
       uPhoto
     ];
   }
