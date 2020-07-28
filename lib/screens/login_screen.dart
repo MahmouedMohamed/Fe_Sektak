@@ -130,7 +130,7 @@ class LoginScreen extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
                                 onPressed: () async {
-                                  User user = await apiCaller.get(userData : {'email' : email,'password' : password});
+                                  User user = await apiCaller.get(userData : {'email' : email.text,'password' : password.text});
                                   if(user!=null){
                                     sessionManager.createSession(user);
                                     Navigator.popAndPushNamed(context, HomeScreen.id);

@@ -32,8 +32,8 @@ class test extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Text('${request.passenger}'),
-          Text('${request.startPointLatitude}'),
-          Text('${request.startPointLongitude}'),
+          Text('${request.meetPoint.latitude}'),
+          Text('${request.meetPoint.longitude}'),
           Text('${request.endPointLatitude}'),
           Text('${request.endPointLongitude}'),
           Text('${request.meetPoint}'),
@@ -59,11 +59,12 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
   initializeRides() async {
     rides = await apiCaller.getAll(
       requestData: {
-        'startPointLatitude' : request.startPointLatitude,
-        'startPointLongitude' : request.startPointLongitude,
+        'meetPointLatitude' : request.meetPoint.latitude,
+        'meetPointLongitude' : request.meetPoint.longitude,
         'endPointLatitude' : request.endPointLatitude,
         'endPointLongitude' : request.endPointLongitude,
         'numberOfNeededSeats' : request.numberOfNeededSeats,
+        'meetingTime' : request.meetPoint.meetingTime
       }
     );
   }

@@ -26,6 +26,7 @@ class _RequestCreationState extends State<RequestCreation> {
   int currentIntValue = 1;
   bool isLoaded = false;
   TimeOfDay selectedTime;
+  TimeOfDay requestTime;
   SessionManager sessionManager = new SessionManager();
   @override
   void initState() {
@@ -143,13 +144,13 @@ class _RequestCreationState extends State<RequestCreation> {
                     ),
                     onPressed: () {
                       Navigator.pop(context);
-                      addThreeMarkers();
+                      addTwoMarkers();
                     },
                   ),
                   RaisedButton.icon(
                     color: Colors.black,
                     label: Text(
-                      'Select Time Of Ride',
+                      'Select Time Of meeting',
                       style: TextStyle(color: Colors.white),
                     ),
                     icon: Icon(
@@ -190,17 +191,13 @@ class _RequestCreationState extends State<RequestCreation> {
                       ),
                       onPressed: () {
                         Request request = new Request(
-                          startPointLatitude:
-                              markers[0].marker.position.latitude,
-                          startPointLongitude:
-                              markers[0].marker.position.longitude,
-                          endPointLatitude: markers[1].marker.position.latitude,
+                          endPointLatitude: markers[0].marker.position.latitude,
                           endPointLongitude:
-                              markers[1].marker.position.longitude,
+                              markers[0].marker.position.longitude,
                           meetPoint: new MeetPoint(
                               meetingTime: selectedTime,
-                              latitude: markers[2].marker.position.latitude,
-                              longitude: markers[2].marker.position.longitude),
+                              latitude: markers[1].marker.position.latitude,
+                              longitude: markers[1].marker.position.longitude),
                           passenger: sessionManager.getUser(),
                           numberOfNeededSeats: currentIntValue
                         );
@@ -256,17 +253,17 @@ class _RequestCreationState extends State<RequestCreation> {
     });
   }
 
-  Future<void> addThreeMarkers() async {
+  Future<void> addTwoMarkers() async {
     final int markerCount = markers.length;
-    if (markerCount == 3) {
+    if (markerCount == 2) {
       return;
     }
     await userLocation.updateLatLng();
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       MarkerId markerId;
       Marker marker;
       markerId =
-          MarkerId(i == 0 ? 'Source' : i == 1 ? 'Destination' : 'MeetPoint');
+          MarkerId(i == 0 ? 'Destination' : 'MeetPoint');
       marker = Marker(
           markerId: markerId,
           position: LatLng(
@@ -274,15 +271,13 @@ class _RequestCreationState extends State<RequestCreation> {
             userLocation.getLatLng().longitude,
           ),
           infoWindow: InfoWindow(
-              title: i == 0 ? 'Source' : i == 1 ? 'Destination' : 'MeetPoint'),
+              title: i == 0 ? 'Destination' : 'MeetPoint'),
           draggable: true,
           onDragEnd: (LatLng position) {
             _onMarkerDragEnd(markerId, position);
           },
           icon: i == 0
-              ? BitmapDescriptor.defaultMarker
-              : i == 1
-                  ? BitmapDescriptor.defaultMarkerWithHue(
+              ? BitmapDescriptor.defaultMarkerWithHue(
                       BitmapDescriptor.hueGreen)
                   : BitmapDescriptor.defaultMarkerWithHue(
                       BitmapDescriptor.hueBlue));

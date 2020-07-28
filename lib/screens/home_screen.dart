@@ -1,6 +1,10 @@
 import 'package:fe_sektak/screens/requestCreation_screen.dart';
+import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'rideCreation_screen.dart';
+import 'rides_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id='Home_Screen';
@@ -16,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Animation<double> _scaleAnimation;
   Animation<double> _menuScaleAnimation;
   Animation<Offset> _slideAnimation;
+  SessionManager sessionManager = new SessionManager();
   @override
   void initState() {
     super.initState();
@@ -170,33 +175,37 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                 minWidth: 240,
                               ),
                             )),
-                        /// if Session's User has Car? Show this
-                        Padding(
-                            padding: EdgeInsets.only(
-                                top: 10, bottom: 30),
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: ButtonTheme(
-                                child: RaisedButton(
-                                  onPressed: () => {},
-                                  color: Colors.lightBlue[200],
-                                  splashColor: Colors.blue,
-                                  focusColor: Colors.blue,
-                                  highlightColor: Colors.blue,
-                                  colorBrightness: Brightness.light,
-                                  child: Text('Start a Ride!',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          letterSpacing: 1.5,
-                                          fontWeight: FontWeight.bold)),
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30)),
+                        Visibility(
+                          child: Padding(
+                              padding: EdgeInsets.only(
+                                  top: 10, bottom: 30),
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: ButtonTheme(
+                                  child: RaisedButton(
+                                    onPressed: () => {
+                                      Navigator.popAndPushNamed(context, RideCreation.id)
+                                    },
+                                    color: Colors.lightBlue[200],
+                                    splashColor: Colors.blue,
+                                    focusColor: Colors.blue,
+                                    highlightColor: Colors.blue,
+                                    colorBrightness: Brightness.light,
+                                    child: Text('Start a Ride!',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            letterSpacing: 1.5,
+                                            fontWeight: FontWeight.bold)),
+                                    elevation: 5,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30)),
+                                  ),
+                                  minWidth: 240,
                                 ),
-                                minWidth: 240,
-                              ),
-                            ))
+                              )),
+                          visible: sessionManager.getUser().car!=null,
+                        )
                       ],
                     )
                   ],
@@ -264,7 +273,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           size: 30,
                         ),
                         splashColor: Colors.limeAccent,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.popAndPushNamed(context, RideScreen.id);
+                        },
                       ),
 
                       SizedBox(height: 10),

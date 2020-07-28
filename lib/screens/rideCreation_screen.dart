@@ -9,6 +9,9 @@ import 'package:numberpicker/numberpicker.dart';
 
 import 'package:fe_sektak/models/marker.dart';
 import 'package:fe_sektak/models/user_location.dart';
+import 'package:toast/toast.dart';
+
+import 'home_screen.dart';
 
 class RideCreation extends StatefulWidget {
   static const String id='RideCreation_Screen';
@@ -21,10 +24,9 @@ class _RideCreationState extends State<RideCreation> {
   UserLocation userLocation;
   List<ModifiedMarker> markers;
   MarkerIcon markerOption;
-  DateTime selectedDate;
   TimeOfDay selectedTime;
   NumberPicker integerNumberPicker;
-  int _currentIntValue = 0;
+  int _currentIntValue = 4;
   ApiCaller apiCaller = new RideApi();
   SessionManager sessionManager = new SessionManager();
   @override
@@ -33,7 +35,6 @@ class _RideCreationState extends State<RideCreation> {
     userLocation = new UserLocation();
     markers = List<ModifiedMarker>();
     markerOption = new MarkerIcon();
-    selectedDate = DateTime.now();
     selectedTime = TimeOfDay.now();
     _initializeNumberPickers();
   }
@@ -163,22 +164,6 @@ class _RideCreationState extends State<RideCreation> {
                     },
                   ),
                   RaisedButton.icon(
-                      label: Text('Select Date of Ride'),
-                      icon: Icon(Icons.calendar_today),
-                      onPressed: () async {
-                        DateTime date = await showDatePicker(
-                          context: context,
-                          initialDate: selectedDate,
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime.now().add(Duration(days: 1)),
-                        );
-                        if (date != null) {
-                          setState(() {
-                            selectedDate = date;
-                          });
-                        }
-                      }),
-                  RaisedButton.icon(
                     label: Text('Select Time Of Ride'),
                     icon: Icon(Icons.timer),
                     onPressed: () async {
@@ -200,20 +185,24 @@ class _RideCreationState extends State<RideCreation> {
                     child: RaisedButton.icon(
                       icon: Icon(Icons.arrow_forward),
                       label: Text('Create Ride'),
-                      onPressed: () {
-                        apiCaller.create(
+                      onPressed: () async {
+                        String status = await apiCaller.create(
                           rideData: {
                             'startPointLatitude' : markers[0].getMarker().position.latitude,
                             'startPointLongitude' : markers[0].getMarker().position.longitude,
                             'endPointLatitude' : markers[1].getMarker().position.latitude,
                             'endPointLongitude' : markers[1].getMarker().position.longitude,
-                            'availableSeats' : integerNumberPicker,
-                            'date' : selectedDate,
+                            'availableSeats' : _currentIntValue,
                             'time' : selectedTime,
-                            'available' : true,
+                            'available' : 1,
                           },
                           userData: {'userId' : sessionManager.getUser().id}
                         );
+                        if(status == 'done'){
+                          Navigator.popAndPushNamed(context, HomeScreen.id);
+                        }else{
+                          Toast.show('Enter Valid data', context);
+                        }
                       },
                     ),
                   )

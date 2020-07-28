@@ -3,6 +3,7 @@ import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/widgets/text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 class SignupScreen extends StatefulWidget {
   static const String id = 'SignUp_Screen';
@@ -30,6 +31,10 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void onChange(bool status) {
     setState(() {
+      carLicense.clear();
+      carColor.clear();
+      carModel.clear();
+      licenceId.clear();
       hasCar = status;
     });
   }
@@ -122,7 +127,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 if (status == 'done') {
                   Navigator.popAndPushNamed(context, LoginScreen.id);
                 } else {
-                  /// Toast Or Show Errors
+                  Toast.show('Enter a valid data',context);
                 }
               },
               child: Text('Signup'),
