@@ -6,9 +6,23 @@ import 'package:http/http.dart' as http;
 import 'user_api.dart';
 class RequestApi implements ApiCaller{
   @override
-  create({userData, carData,rideData}) {
-    // TODO: implement create
-    throw UnimplementedError();
+  create({userData, carData,rideData,requestData}) async {
+    var body = {
+      'meetPointLatitude' : requestData['meetPointLatitude'],
+      'meetPointLongitude' : requestData['meetPointLongitude'],
+      'endPointLatitude' : requestData['endPointLatitude'],
+      'endPointLongitude' : requestData['endPointLongitude'],
+      'numberOfNeededSeats' : requestData['numberOfNeededSeats'],
+      'time' : requestData['meetingTime'],
+      'response' : false
+    };
+    var response = await http.post(Uri.encodeFull(URL + 'request'),
+        headers: {"Accpet": "application/json"}, body: body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      return 'done';
+    }
   }
 
   @override
@@ -32,6 +46,12 @@ class RequestApi implements ApiCaller{
   @override
   update({userData}) {
     // TODO: implement update
+    throw UnimplementedError();
+  }
+
+  @override
+  getById({Data}) {
+    // TODO: implement getById
     throw UnimplementedError();
   }
 

@@ -9,19 +9,27 @@ import 'package:http/http.dart' as http;
 
 class UserApi implements ApiCaller {
   @override
-  create({userData,carData,rideData}) async {
-    var body = {
+  create({userData,carData,rideData,requestData}) async {
+    Map<String,dynamic> body = {
       'name': userData['name'].toString(),
       'email': userData['email'].toString(),
       'password': userData['password'],
       'phoneNumber': userData['phoneNumber'].toString(),
       'nationalId' : userData['nationalId'].toString(),
-      'licenceId' : userData['licenceId'].toString(),
-      'car': [carData['carLicenseId'],carData['carModel'],carData['color']],
     };
+    if(carData['carLicenseId']!=''){
+      body.addAll({
+        'car[\'license\']': carData['carLicenseId'].toString(),
+        'car[\'model\']' : carData['carModel'],
+        'car[\'color\']' : carData['color'],
+        'car[\'userLicense\']': userData['licenceId'].toString(),
+      });
+    }
+    print(body);
     var response = await http.post(Uri.encodeFull(URL + 'register'),
         headers: {"Accpet": "application/json"}, body: body);
-    var convertDataToJson = jsonDecode(response.toString());
+    var convertDataToJson = jsonDecode(response.body);
+    print(convertDataToJson);
     if (convertDataToJson['status'] != 'undone') {
       return 'done';
     } else {
@@ -37,29 +45,32 @@ class UserApi implements ApiCaller {
 
   @override
   get({userData}) async {
-    var body = {'email': userData['email'], 'password': userData['password']};
-    var response = await http.post(Uri.encodeFull(URL + 'login'),
-        headers: {"Accpet": "application/json"}, body: body);
+    var response = await http.get(Uri.encodeFull(URL + 'login?email=${userData['email']}&password=${userData['password']}'),
+        headers: {"Accpet": "application/json"});
+    print(response.statusCode);
     if (response.statusCode != 200) {
       return null;
     } else {
       var convertDataToJson = jsonDecode(response.body);
+
       User user = new User(
         id: convertDataToJson['user']['id'].toString(),
         nationalId: convertDataToJson['user']['nationalId'],
         name: convertDataToJson['user']['name'],
         email: convertDataToJson['user']['email'],
-        phoneNumber: convertDataToJson['user']['mobileNum'],
-        licenseId: convertDataToJson['user']['licenceId'],
-        car: convertDataToJson['user']['car']
+        phoneNumber: convertDataToJson['user']['phoneNumber'],
+        rate: convertDataToJson['user']['profile']['rate'],
+        car: convertDataToJson['user']['car'] == null
             ? null
             : Car(
-                convertDataToJson['user']['car'][0],
-                convertDataToJson['user']['car'][1],
-                convertDataToJson['user']['car'][2],
-              ),
-        uPhoto: convertDataToJson['user']['uPhoto'],
+                convertDataToJson['user']['car']['license'],
+          convertDataToJson['user']['car']['carModel'],
+          convertDataToJson['user']['car']['color'],
+          convertDataToJson['user']['car']['userLicense'],
+        ),
+        uPhoto: convertDataToJson['user']['profile']['picture'].toString(),
       );
+      print(user.toList());
       return user;
     }
   }
@@ -74,5 +85,20 @@ class UserApi implements ApiCaller {
   update({userData}) {
     // TODO: implement update
     throw UnimplementedError();
+  }
+
+  @override
+  getById({Data}) async {
+    var response = await http.get(Uri.encodeFull(URL + 'user?userId=${Data['userId']}'),
+        headers: {"Accpet": "application/json"});
+    var convertDataToJson = jsonDecode(response.body);
+    if (response.statusCode !=200) {
+      return null;
+    } else {
+      return new User(
+        name: convertDataToJson['name'],
+        nationalId: convertDataToJson['nationalId']
+      );
+    }
   }
 }

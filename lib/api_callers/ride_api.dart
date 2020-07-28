@@ -14,7 +14,7 @@ import 'user_api.dart';
 
 class RideApi implements ApiCaller {
   @override
-  create({userData,carData,rideData}) async {
+  create({userData,carData,rideData,requestData}) async {
     var body = {
       'userId': userData['userId'],
       'startPointLatitude': rideData['startPointLatitude'].toString(),
@@ -22,12 +22,12 @@ class RideApi implements ApiCaller {
       'endPointLatitude': rideData['endPointLatitude'].toString(),
       'endPointLongitude': rideData['endPointLongitude'].toString(),
       'availableSeats': rideData['availableSeats'].toString(),
-      'date': rideData['date'].toString(),
-      'time': rideData['time'].toString(),
-      'available': true.toString(),
+      'time': rideData['time'].hour.toString()+':'+rideData['time'].minute.toString(),
+      'available': rideData['available'].toString(),
     };
     var response = await http.post(Uri.encodeFull(URL + 'ride'),
         headers: {"Accpet": "application/json"}, body: body);
+    print('thing ${response.body}');
     if (response.statusCode != 200) {
       return null;
     } else {
@@ -43,90 +43,65 @@ class RideApi implements ApiCaller {
 
   @override
   get({userData}) async {   ///////////get for specific user
-    var body = {'userId': userData['userId']};
-    List returnedRides = new List<Ride>();
-    var response = await http.post(Uri.encodeFull(URL + 'allRides'),
-        headers: {"Accpet": "application/json"}, body: body);
-    if (response.statusCode != 200) {
-      return null;
-    } else {
-      var convertDataToJson = jsonDecode(response.body);
-      List rides = convertDataToJson['rides'];
-      rides.forEach((ride) {
-        List returnedRequests = new List<Request>();
-        if (ride['requests'] != null) {
-          List requests = ride['requests'];
-          requests.forEach((request) async {
-            User user =
-            await UserApi().get(userData: {'userId': request['userId']});
-            returnedRequests.add(new Request(
-              requestId: request['requestId'],
-              passenger: user,
-              numberOfNeededSeats: request['numberOfNeededSeats'],
-              startPointLatitude: request['startLat'],
-              startPointLongitude: request['StartLng'],
-              endPointLatitude: request['EndLat'],
-              endPointLongitude: request['EndLng'],
-              meetPoint: new MeetPoint(
-                meetPointId: request['MeetPoint'][0],
-                latitude: double.parse(request['meetPoint'][1]),
-                longitude: double.parse(request['meetPoint'][2]),
-                meetingTime: request['MeetPoint'][2] == null
-                    ? null
-                    : TimeOfDay.fromDateTime(DateTime.parse(request['meetPoint'][3])),
-              ),
-            ));
-          });
-        }
-        returnedRides.add(new Ride(
-            rideId: ride['id'],
-            driver: ride['driver'],
-            requests: returnedRequests,
-            startPointLatitude: ride['startPoint']['lat'],
-            startPointLongitude: ride['startPoint']['lng'],
-            endPointLatitude: ride['endPoint']['lat'],
-            endPointLongitude: ride['endPoint']['lng'],
-            availableSeats: ride['availableSeats'],
-            rideTime: ride['rideTime'],
 
-            /// Must be converted
-            available: bool.fromEnvironment(ride['available'])));
-      });
-    }
-    return returnedRides;
   }
 
   @override
   getAll({userData,requestData}) async { ///////////get responding for request
-    var body = {
-      'startPointLatitude' : requestData['startPointLatitude'],
-      'startPointLongitude' : requestData['startPointLongitude'],
-      'endPointLatitude' : requestData['endPointLatitude'],
-      'endPointLongitude' : requestData['endPointLongitude'],
-      'numberOfNeededSeats' : requestData['numberOfNeededSeats'],
-    };
     List returnedRides = new List<Ride>();
-    var response = await http.post(Uri.encodeFull(URL + 'suitableRides'),
-        headers: {"Accpet": "application/json"}, body: body);
+    var response = await http.get(Uri.encodeFull(URL + 'myRides?userId=${userData['userId']}'),
+        headers: {"Accpet": "application/json"});
+//    print(response.body);
     if (response.statusCode != 200) {
       return null;
     } else {
       var convertDataToJson = jsonDecode(response.body);
       List rides = convertDataToJson['rides'];
-      rides.forEach((ride) {
+      rides.forEach((ride) async {
+        List <Request> returnedRequests = new List<Request>();
+        if (ride['requests'] != null) {
+          List requests = ride['requests'];
+          await Future.forEach(requests, (request) async {
+            User user =
+            await UserApi().getById(Data:  {'userId': request['user_id']});
+//            print(request);
+            TimeOfDay getTime(time){
+              List<String> array = time.toString().split(':');
+              return TimeOfDay(hour: int.parse(array[0]), minute: int.parse(array[1]));
+            }
+//            print(user.toList());
+            returnedRequests.add(new Request(
+              requestId: request['id'].toString(),
+              passenger: user,
+              numberOfNeededSeats: request['neededSeats'],
+              endPointLatitude: request['destinationLatitude'],
+              endPointLongitude: request['destinationLongitude'],
+              response: request['response']==1? true:false,
+              meetPoint: new MeetPoint(
+                latitude: request['meetPointLatitude'],
+                longitude: request['meetPointLongitude'],
+                meetingTime: request['time']== null
+                    ? null
+                    : getTime(request['time']),
+              ),
+            ));
+            print('thing ${returnedRequests[0].passenger.name}');
+          });
+        }
+//        print('thing thing $returnedRequests');
         returnedRides.add(new Ride(
-            rideId: ride['id'],
-            driver: ride['driver'],
-            startPointLatitude: ride['startPoint']['lat'],
-            startPointLongitude: ride['startPoint']['lng'],
-            endPointLatitude: ride['endPoint']['lat'],
-            endPointLongitude: ride['endPoint']['lng'],
+            rideId: ride['id'].toString(),
+            requests: returnedRequests,
+            startPointLatitude: ride['startPointLatitude'],
+            startPointLongitude: ride['startPointLongitude'],
+            endPointLatitude: ride['destinationLatitude'],
+            endPointLongitude: ride['destinationLongitude'],
             availableSeats: ride['availableSeats'],
             rideTime: ride['rideTime'],
-
             /// Must be converted
-            available: ride['available']));
+            available: ride['available'] == 1 ? true:false));
       });
+//      print(returnedRides[0]);
     }
     return returnedRides;
   }
@@ -134,6 +109,12 @@ class RideApi implements ApiCaller {
   @override
   update({userData}) {
     // TODO: implement update
+    throw UnimplementedError();
+  }
+
+  @override
+  getById({Data}) {
+    // TODO: implement getById
     throw UnimplementedError();
   }
 }
