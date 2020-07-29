@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'meet_point.dart';
 import 'user.dart';
 class Request{
@@ -11,7 +9,7 @@ class Request{
   MeetPoint meetPoint;
   bool response;
   bool spam;
-
+  String rideId;
   Request({this.requestId,this.passenger, this.numberOfNeededSeats, this.response, this.endPointLatitude, this.endPointLongitude,
-      this.meetPoint});
+      this.meetPoint,this.rideId});
 }
