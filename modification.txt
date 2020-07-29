@@ -9,12 +9,21 @@
 //see available rides -> if there is accepted -> show it, else show suitable rides
 
 
+ *Route::get('/login', 'UserController@login');
+ *Route::post('/register', 'UserController@register');
+    *Route::get('/user', 'UserController@getById');
+    Route::put('/user', 'UserController@edit');
+    Route::delete('/user', 'UserController@destroy');
 
-// add license id in user table
-// requests table should have meetpoint lat and meetpoint longitude(double) instead of string meetpoint + destination
-// separate meetpoint to a seperated table that would have lat and lng points, meeting time, refer to request id
-// rides table should have destination lat and destination longitude(double) instead of string destination + start
 
+    Route::get('/allRequests', 'RequestsController@index');
+    *Route::post('/request', 'RequestsController@store');
+    *Route::put('/request', 'RequestsController@update');
+    Route::delete('/request', 'RequestsController@destroy');
 
-
-//request id , ride id , user_id  requestId and rideId cannot repeat
+    *Route::get('/allRides', 'RidesController@index');
+    *Route::get('/availableRides', 'RidesController@viewAvailableRides');
+    *Route::put('/acceptRequest', 'RidesController@acceptRequest');
+    *Route::post('/ride', 'RidesController@store');
+    *Route::delete('/ride', 'RidesController@destroy');
+    Route::put('/ride', 'RidesController@update');
