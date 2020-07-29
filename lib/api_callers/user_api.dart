@@ -19,17 +19,17 @@ class UserApi implements ApiCaller {
     };
     if(carData['carLicenseId']!=''){
       body.addAll({
-        'car[\'license\']': carData['carLicenseId'].toString(),
-        'car[\'model\']' : carData['carModel'],
-        'car[\'color\']' : carData['color'],
-        'car[\'userLicense\']': userData['licenceId'].toString(),
+        'car[license]': carData['carLicenseId'].toString(),
+        'car[model]' : carData['carModel'],
+        'car[color]' : carData['color'],
+        'car[userLicense]': userData['licenceId'].toString(),
       });
     }
     print(body);
     var response = await http.post(Uri.encodeFull(URL + 'register'),
         headers: {"Accpet": "application/json"}, body: body);
+    print(response.body);
     var convertDataToJson = jsonDecode(response.body);
-    print(convertDataToJson);
     if (convertDataToJson['status'] != 'undone') {
       return 'done';
     } else {
@@ -38,13 +38,13 @@ class UserApi implements ApiCaller {
   }
 
   @override
-  delete({userData}) {
+  delete({userData,rideData,requestData}) {
     // TODO: implement delete
     throw UnimplementedError();
   }
 
   @override
-  get({userData}) async {
+  get({userData,requestData}) async {
     var response = await http.get(Uri.encodeFull(URL + 'login?email=${userData['email']}&password=${userData['password']}'),
         headers: {"Accpet": "application/json"});
     print(response.statusCode);
@@ -52,7 +52,7 @@ class UserApi implements ApiCaller {
       return null;
     } else {
       var convertDataToJson = jsonDecode(response.body);
-
+print('thing $convertDataToJson');
       User user = new User(
         id: convertDataToJson['user']['id'].toString(),
         nationalId: convertDataToJson['user']['nationalId'],
@@ -82,7 +82,7 @@ class UserApi implements ApiCaller {
   }
 
   @override
-  update({userData}) {
+  update({userData,rideData,requestData}) {
     // TODO: implement update
     throw UnimplementedError();
   }
@@ -95,9 +95,12 @@ class UserApi implements ApiCaller {
     if (response.statusCode !=200) {
       return null;
     } else {
+      print(convertDataToJson);
       return new User(
         name: convertDataToJson['name'],
-        nationalId: convertDataToJson['nationalId']
+        nationalId: convertDataToJson['nationalId'],
+        uPhoto: convertDataToJson['profile']['picture'].toString(),
+        rate: convertDataToJson['profile']['rate'].toString()
       );
     }
   }
