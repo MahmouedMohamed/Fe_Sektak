@@ -2,19 +2,18 @@ import 'package:fe_sektak/screens/requestCreation_screen.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'login_screen.dart';
 import 'rideCreation_screen.dart';
-import 'rides_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const String id='Home_Screen';
+  static const String id = 'Home_Screen';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   bool isCollapsed = true;
-  double screenWidth, screenHeight;
   final Duration duration = const Duration(milliseconds: 300);
   AnimationController _animationController;
   Animation<double> _scaleAnimation;
@@ -34,22 +33,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   @override
-  void dispose() {
-//    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    Size size = MediaQuery.of(context).size;
-    screenWidth = size.width;
-    screenHeight = size.height;
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          menu(context),
-          home(context)],
+      body:  Stack(
+        children: <Widget>[menu(context), home(context)],
       ),
     );
   }
@@ -58,8 +46,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return AnimatedPositioned(
         top: 0,
         bottom: 0,
-        left: isCollapsed ? 0 : 0.6 * screenWidth,
-        right: isCollapsed ? 0 : -0.4 * screenWidth,
+        left: isCollapsed ? 0 : 0.6 * MediaQuery.of(context).size.width,
+        right: isCollapsed ? 0 : -0.4 * MediaQuery.of(context).size.width,
         duration: duration,
         curve: ElasticInCurve(3),
         child: ScaleTransition(
@@ -94,7 +82,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       },
                     ),
                   ),
-                  title: Text("Fe Sektak",style: TextStyle(color: Colors.black),),
+                  title: Text(
+                    "Fe Sektak",
+                    style: TextStyle(color: Colors.black),
+                  ),
                   actions: <Widget>[
                     IconButton(
                         icon: Icon(
@@ -124,8 +115,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       radius: 100,
                       backgroundColor: Colors.transparent,
                       child: ClipOval(
-                        child: Image.asset(
-                          'assets/images/2.jpg',
+                        child: Image.network(
+                          sessionManager.getUser().uPhoto,
                           fit: BoxFit.fill,
                           width: 150,
                           height: 150,
@@ -135,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     Padding(
                       padding: EdgeInsets.only(top: 30, bottom: 3),
                       child: Text(
-                        'Welcome, Mahmoued!',
+                        'Welcome, ${sessionManager.getUser().name}!',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.black54,
@@ -148,14 +139,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         Padding(
-                            padding: EdgeInsets.only(
-                                top: 10, bottom: 30),
+                            padding: EdgeInsets.only(top: 10, bottom: 30),
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: ButtonTheme(
                                 child: RaisedButton(
-                                  onPressed: (){
-                                    Navigator.pushNamed(context, RequestCreation.id);
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, RequestCreation.id);
                                   },
                                   color: Colors.lightBlue[200],
                                   splashColor: Colors.blue,
@@ -177,14 +168,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             )),
                         Visibility(
                           child: Padding(
-                              padding: EdgeInsets.only(
-                                  top: 10, bottom: 30),
+                              padding: EdgeInsets.only(top: 10, bottom: 30),
                               child: Align(
                                 alignment: Alignment.bottomCenter,
                                 child: ButtonTheme(
                                   child: RaisedButton(
                                     onPressed: () => {
-                                      Navigator.popAndPushNamed(context, RideCreation.id)
+                                      Navigator.popAndPushNamed(
+                                          context, RideCreation.id)
                                     },
                                     color: Colors.lightBlue[200],
                                     splashColor: Colors.blue,
@@ -199,20 +190,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                             fontWeight: FontWeight.bold)),
                                     elevation: 5,
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(30)),
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
                                   ),
                                   minWidth: 240,
                                 ),
                               )),
-                          visible: sessionManager.getUser().car!=null,
+                          visible: sessionManager.getUser().car != null,
                         )
                       ],
                     )
                   ],
                 ),
               ]))),
-        )
-    );
+        ));
   }
 
   Widget menu(context) {
@@ -226,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               begin: Alignment.bottomRight,
               end: Alignment.topLeft,
               colors: [
-                Colors.blueAccent,
+                Colors.white,
                 Color.fromARGB(255, 252, 92, 125),
               ],
             )),
@@ -238,7 +229,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
-//                      mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       CircleAvatar(
                         radius: 100,
@@ -252,84 +242,48 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           ),
                         ),
                       ),
-                      FloatingActionButton.extended(
-                        heroTag: "Profile",
-                        label: Text('Profile'),
+                      RaisedButton.icon(
+                        label: Text('Profile',style: TextStyle(color: Colors.amber),),
                         icon: Icon(
                           Icons.accessibility,
                           size: 30,
+                          color: Colors.amber,
                         ),
+                        color: Colors.black,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
                         splashColor: Colors.blue,
                         onPressed: () {},
                       ),
-
-                      /// If Session's User has car? Show this
-                      SizedBox(height: 10),
-                      FloatingActionButton.extended(
-                        heroTag: "My Rides",
-                        label: Text('My Rides'),
-                        icon: Icon(
-                          Icons.directions_car,
-                          size: 30,
-                        ),
-                        splashColor: Colors.limeAccent,
+                      RaisedButton.icon(
+                        color: Colors.black,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
                         onPressed: () {
-                          Navigator.popAndPushNamed(context, RideScreen.id);
-                        },
-                      ),
-
-                      SizedBox(height: 10),
-                      FloatingActionButton.extended(
-                        heroTag: "My Requests",
-                        label: Text('My Requests'),
-                        icon: Icon(
-                          Icons.directions_car,
-                          size: 30,
-                        ),
-                        splashColor: Colors.limeAccent,
-                        onPressed: () {},
-                      ),
-                      SizedBox(height: 10),
-                      FloatingActionButton.extended(
-                        heroTag: "Contact",
-                        label: Text(
-                          'Contact Us',
-                          softWrap: true,
-                          style: TextStyle(letterSpacing: 1.5),
-                        ),
-                        icon: Icon(
-                          Icons.message,
-                          size: 30,
-                        ),
-                        splashColor: Colors.green,
-                        onPressed: () {},
-                      ),
-                      SizedBox(height: 50),
-                      FlatButton.icon(
-                        onPressed: () {
-                          /// Clear Session
-                          /// Navigate to Login page
+                          sessionManager.logout();
+                          Navigator.popAndPushNamed(context, LoginScreen.id);
                         },
                         icon: Icon(
                           Icons.exit_to_app,
                           size: 30,
+                          color: Colors.amber,
                         ),
                         label: Text(
                           'Logout',
-                          style: TextStyle(color: Colors.black, fontSize: 25),
+                          style: TextStyle(color: Colors.amber, fontSize: 18),
                         ),
                       ),
                       SizedBox(height: 10),
-                      FlatButton.icon(
+                      RaisedButton.icon(
+                        color: Colors.red,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
                           onPressed: () {},
                           icon: Icon(
                             Icons.warning,
                             size: 25,
-                            color: Colors.red,
+                            color: Colors.white,
                           ),
                           label: Text('Report a problem.',
                               style:
-                                  TextStyle(color: Colors.red, fontSize: 15))),
+                                  TextStyle(color: Colors.white, fontSize: 15))),
                     ],
                   ))),
             )),

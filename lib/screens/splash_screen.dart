@@ -7,10 +7,10 @@ import 'dart:math';
 
 import 'home_screen.dart';
 import 'login_screen.dart';
-
+import 'main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  static const String id ='Splash_Screen';
+  static const String id = 'Splash_Screen';
   @override
   _SplashScreen createState() => new _SplashScreen();
 }
@@ -30,55 +30,67 @@ class _SplashScreen extends State<SplashScreen>
         AnimationController(vsync: this, duration: Duration(seconds: 3));
     _colorAnimation = Tween<Color>(begin: Colors.green, end: Colors.blue)
         .animate(_animationController);
-    quote = [
-      'Fe Sektak'
-    ].elementAt(Random().nextInt(1));
+    quote = ['Fe Sektak'].elementAt(Random().nextInt(1));
     sessionManager = new SessionManager();
     getSession();
     changeOpacity();
   }
+
   getSession() async {
     await sessionManager.getSessionManager();
     setState(() {});
   }
+
   getHomePage() {
     if (sessionManager.isLoggin()) {
       sessionManager.loadSession();
-      return HomeScreen.id;
+      return MainPage.id;
     } else
       return LoginScreen.id;
   }
+
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
+
   changeOpacity() {
     if (value < 1.0) {
-      Timer.periodic(Duration(seconds: 1), (timer) => {
-          if (mounted) {
-        setState(() {
+      Timer.periodic(
+          Duration(seconds: 1),
+          (timer) => {
+                if (mounted)
+                  {
+                    setState(() {
 //            value += 0.02;
-          value+=1.0;
-        })
-      }
-    });
-    Timer.periodic(Duration(seconds: 3), (timer)=> {
-    if(mounted) {
-    setState(() {
-    opacity = 1 - opacity;
-    changeOpacity();
-    })
-    }
-    });
+                      value += 1.0;
+                    })
+                  }
+              });
+      Timer.periodic(
+          Duration(seconds: 3),
+          (timer) => {
+                if (mounted)
+                  {
+                    setState(() {
+                      opacity = 1 - opacity;
+                      changeOpacity();
+                    })
+                  }
+              });
     } else {
-    opacity = 1.0;
-    navigate();
+      opacity = 1.0;
+      navigate();
     }
   }
-  navigate(){
-    sessionManager.sharedPreferences == null? navigate() : Navigator.popAndPushNamed(context, getHomePage());
+
+  navigate() {
+    sessionManager.sharedPreferences == null
+        ? navigate()
+        : Navigator.popAndPushNamed(context, getHomePage());
   }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -107,7 +119,8 @@ class _SplashScreen extends State<SplashScreen>
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.0,
-                    ),textAlign: TextAlign.center,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -119,7 +132,9 @@ class _SplashScreen extends State<SplashScreen>
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       Text(
-                        value < 1.0? '${(value * 100).toStringAsPrecision(3)}%' : 'Welcome',
+                        value < 1.0
+                            ? '${(value * 100).toStringAsPrecision(3)}%'
+                            : 'Welcome',
                         style: TextStyle(
                           color: Colors.white,
                         ),

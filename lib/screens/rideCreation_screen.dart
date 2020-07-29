@@ -1,17 +1,14 @@
 import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/ride_api.dart';
 import 'package:fe_sektak/session/session_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:fe_sektak/widgets/marker_options.dart';
 import 'package:numberpicker/numberpicker.dart';
-
-import 'package:fe_sektak/models/marker.dart';
 import 'package:fe_sektak/models/user_location.dart';
 import 'package:toast/toast.dart';
-
-import 'home_screen.dart';
+import 'main_screen.dart';
 
 class RideCreation extends StatefulWidget {
   static const String id='RideCreation_Screen';
@@ -22,48 +19,24 @@ class RideCreation extends StatefulWidget {
 class _RideCreationState extends State<RideCreation> {
   GoogleMap googleMap;
   UserLocation userLocation;
-  List<ModifiedMarker> markers;
-  MarkerIcon markerOption;
   TimeOfDay selectedTime;
   NumberPicker integerNumberPicker;
-  int _currentIntValue = 4;
+  int currentIntValue = 4;
   ApiCaller apiCaller = new RideApi();
+  Set<Marker> markers = new Set();
   SessionManager sessionManager = new SessionManager();
   @override
   void initState() {
     super.initState();
     userLocation = new UserLocation();
-    markers = List<ModifiedMarker>();
-    markerOption = new MarkerIcon();
     selectedTime = TimeOfDay.now();
-    _initializeNumberPickers();
+    initializeNumberPickers();
   }
-  /* in Case we needed it*/
-
-//  void _onMarkerTapped(MarkerId markerId) {
-//    ModifiedMarker tappedMarker;
-//    int i = 0;
-//    for (; i < _markers.length; i++) {
-//      if (markerId == _markers.elementAt(i).getMarker().markerId) {
-//        tappedMarker = _markers.elementAt(i);
-//        break;
-//      }
-//    }
-//    if (tappedMarker != null) {
-//      setState(() {
-//        _markers.elementAt(i).changeColor();
-//      });
-//    }
-//  }
 
   Future<GoogleMap> getGoogleMap() async {
     Completer<GoogleMapController> _controller = Completer();
     if (userLocation.getLatLng() == null) {
       await userLocation.getUserLocation();
-    }
-    Set<Marker> _markers = Set();
-    for (int i = 0; i < markers.length; i++) {
-      _markers.add(markers[i].getMarker());
     }
     return googleMap = GoogleMap(
       mapType: MapType.normal,
@@ -71,7 +44,7 @@ class _RideCreationState extends State<RideCreation> {
           target: LatLng(userLocation.getLatLng().latitude,
               userLocation.getLatLng().longitude),
           zoom: 18),
-      markers: Set<Marker>.of(_markers),
+      markers: markers,
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
       },
@@ -90,14 +63,16 @@ class _RideCreationState extends State<RideCreation> {
             snapshot.data != null) {
           return googleMap;
         } else if (snapshot.error != null) {
-          return const Text(
-            'Error Picking Image',
+          return Text(
+            'Error ${snapshot.error.toString()}',
             textAlign: TextAlign.center,
           );
         } else {
-          return const Text(
-            'No Image Selected',
-            textAlign: TextAlign.center,
+          return Center(
+            child: CupertinoActivityIndicator(
+              radius: 30,
+              animating: true,
+            ),
           );
         }
       },
@@ -108,6 +83,10 @@ class _RideCreationState extends State<RideCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          leading: BackButton(),
+          title: Text('Ride Creation'),
+        ),
         body: Stack(
           children: <Widget>[
             Container(
@@ -118,14 +97,14 @@ class _RideCreationState extends State<RideCreation> {
                 child: RaisedButton(
                   child: Text('Begin Creation'),
                   onPressed: () {
-                    _onButtonPressed();
+                    onButtonPressed();
                   },
                 )),
           ],
         ));
   }
 
-  void _onButtonPressed() {
+  void onButtonPressed() {
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,
@@ -133,7 +112,7 @@ class _RideCreationState extends State<RideCreation> {
         builder: (context) {
           return Container(
             decoration: BoxDecoration(
-              color: Colors.blueGrey,
+              color: Colors.black.withOpacity(0.5),
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30), topRight: Radius.circular(30)),
             ),
@@ -141,7 +120,7 @@ class _RideCreationState extends State<RideCreation> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Declare Your Points of The Ride'),
+                  Text('Declare Your Points of The Ride',style: TextStyle(color: Colors.white),),
                   Text(
                     'Red for Destination',
                     style: TextStyle(color: Colors.red),
@@ -151,34 +130,41 @@ class _RideCreationState extends State<RideCreation> {
                     style: TextStyle(color: Colors.green),
                   ),
                   RaisedButton.icon(
+                    color: Colors.amber,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(30))),
                     icon: Icon(
                       Icons.flag,
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
-                    label: Text('Press Here To Show Markers'),
+                    label: Text('Press Here To Show Markers',style: TextStyle(color: Colors.white),),
                     onPressed: () {
                       Navigator.pop(context);
                       addTwoMarker();
                     },
                   ),
                   RaisedButton.icon(
-                    label: Text('Select Time Of Ride'),
-                    icon: Icon(Icons.timer),
+                    color: Colors.amber,
+                    label: Text('Select Time Of Ride',style: TextStyle(color: Colors.white),),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                    icon: Icon(Icons.timer,color: Colors.white,),
                     onPressed: () async {
                       TimeOfDay t = await showTimePicker(
                           context: context, initialTime: selectedTime);
                       if (t != null)
                         setState(() {
                           selectedTime = t;
-                          print('Modifying Time $selectedTime');
+//                          print('Modifying Time $selectedTime');
                         });
                     },
                   ),
                   RaisedButton(
-                    onPressed: () => _showIntDialog(),
-                    child: new Text("Select Number Of Seats"),
+                    color: Colors.amber,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
+                    onPressed: () => showIntDialog(),
+                    child: new Text("Select Number Of Seats",style: TextStyle(color: Colors.white),),
                   ),
                   Align(
                     alignment: Alignment.bottomRight,
@@ -186,20 +172,24 @@ class _RideCreationState extends State<RideCreation> {
                       icon: Icon(Icons.arrow_forward),
                       label: Text('Create Ride'),
                       onPressed: () async {
+                        int startIndex = 0;
+                        if(markers.elementAt(0).markerId.value!='Source'){
+                          startIndex =1;
+                        }
                         String status = await apiCaller.create(
                           rideData: {
-                            'startPointLatitude' : markers[0].getMarker().position.latitude,
-                            'startPointLongitude' : markers[0].getMarker().position.longitude,
-                            'endPointLatitude' : markers[1].getMarker().position.latitude,
-                            'endPointLongitude' : markers[1].getMarker().position.longitude,
-                            'availableSeats' : _currentIntValue,
+                            'startPointLatitude' : markers.elementAt(startIndex).position.latitude,
+                            'startPointLongitude' : markers.elementAt(startIndex).position.longitude,
+                            'endPointLatitude' : markers.elementAt(1-startIndex).position.latitude,
+                            'endPointLongitude' : markers.elementAt(1-startIndex).position.longitude,
+                            'availableSeats' : currentIntValue,
                             'time' : selectedTime,
                             'available' : 1,
                           },
                           userData: {'userId' : sessionManager.getUser().id}
                         );
                         if(status == 'done'){
-                          Navigator.popAndPushNamed(context, HomeScreen.id);
+                          Navigator.popAndPushNamed(context, MainPage.id);
                         }else{
                           Toast.show('Enter Valid data', context);
                         }
@@ -211,17 +201,17 @@ class _RideCreationState extends State<RideCreation> {
         });
   }
 
-  void _initializeNumberPickers() {
+  void initializeNumberPickers() {
     integerNumberPicker = new NumberPicker.horizontal(
-      initialValue: _currentIntValue,
+      initialValue: currentIntValue,
       minValue: 0,
       maxValue: 4,
       step: 1,
-      onChanged: (value) => setState(() => _currentIntValue = value),
+      onChanged: (value) => setState(() => currentIntValue = value),
     );
   }
 
-  Future _showIntDialog() async {
+  Future showIntDialog() async {
     await showDialog<int>(
       context: context,
       builder: (BuildContext context) {
@@ -231,7 +221,7 @@ class _RideCreationState extends State<RideCreation> {
                 minValue: 0,
                 maxValue: 4,
                 step: 1,
-                initialIntegerValue: _currentIntValue,
+                initialIntegerValue: currentIntValue,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                 )));
@@ -239,7 +229,7 @@ class _RideCreationState extends State<RideCreation> {
     ).then((num value) {
       if (value != null) {
         print('Modifying Number $value');
-        setState(() => _currentIntValue = value);
+        setState(() => currentIntValue = value);
         integerNumberPicker.animateInt(value);
       }
     });
@@ -263,29 +253,28 @@ class _RideCreationState extends State<RideCreation> {
           ),
           infoWindow: InfoWindow(
               title: i == 0 ? 'Source' : 'Destination', snippet: '*'),
-//            onTap: () {
-//              _onMarkerTapped(markerId);
-//            },
           draggable: true,
           onDragEnd: (LatLng position) {
             _onMarkerDragEnd(markerId, position);
           },
-//            icon: markerOption.getIcon()
           icon: i == 0
               ? BitmapDescriptor.defaultMarker
               : BitmapDescriptor.defaultMarkerWithHue(
                   BitmapDescriptor.hueGreen));
       setState(() {
-        markers.add(ModifiedMarker(marker));
+        markers.add(marker);
       });
     }
   }
 
   void _onMarkerDragEnd(MarkerId markerId, LatLng newPosition) async {
-    for (int i = 0; i < markers.length; i++) {
-      if (markers.elementAt(i).getMarker().markerId == markerId) {
+    for (int index = 0; index < markers.length; index++) {
+      if (markers.elementAt(index).markerId == markerId) {
         setState(() {
-          markers.elementAt(i).onMarkerDragEnd(newPosition);
+          markers.add(markers.elementAt(index).copyWith(
+              positionParam: newPosition
+          ));
+          markers.remove(markers.elementAt(index));
         });
         break;
       }

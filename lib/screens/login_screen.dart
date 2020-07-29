@@ -6,6 +6,8 @@ import 'package:fe_sektak/screens/signup_screen.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
 
+import 'main_screen.dart';
+
 class LoginScreen extends StatelessWidget {
   static const String id ='Login_Screen';
   TextEditingController email = new TextEditingController();
@@ -133,7 +135,7 @@ class LoginScreen extends StatelessWidget {
                                   User user = await apiCaller.get(userData : {'email' : email.text,'password' : password.text});
                                   if(user!=null){
                                     sessionManager.createSession(user);
-                                    Navigator.popAndPushNamed(context, HomeScreen.id);
+                                    Navigator.popAndPushNamed(context, MainPage.id);
                                   }
                                 },
                               ),

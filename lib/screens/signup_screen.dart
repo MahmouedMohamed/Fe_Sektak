@@ -63,7 +63,7 @@ class _SignupScreenState extends State<SignupScreen> {
               child: Container(
         color: Colors.white,
         alignment: Alignment.topCenter,
-        padding: EdgeInsets.only(top: 30, bottom: 20),
+        padding: EdgeInsets.only(top: 30, bottom: 40),
         child: Wrap(
           alignment: WrapAlignment.center,
           children: [

@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:fe_sektak/models/marker.dart';
+import 'package:fe_sektak/api_callers/api_caller.dart';
+import 'package:fe_sektak/api_callers/request_api.dart';
 import 'package:fe_sektak/models/user_location.dart';
-import 'package:fe_sektak/widgets/marker_options.dart';
-import 'package:fe_sektak/screens/ride_selector.dart';
-import 'package:fe_sektak/models/request.dart';
-import 'package:fe_sektak/models/meet_point.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:toast/toast.dart';
+import 'main_screen.dart';
 
 class RequestCreation extends StatefulWidget {
   static const String id = 'RequestCreation_Screen';
@@ -21,34 +20,28 @@ class RequestCreation extends StatefulWidget {
 class _RequestCreationState extends State<RequestCreation> {
   GoogleMap googleMap;
   UserLocation userLocation;
-  List<ModifiedMarker> markers;
+  Set<Marker> markers=new Set();
   NumberPicker integerNumberPicker;
   int currentIntValue = 1;
   bool isLoaded = false;
   TimeOfDay selectedTime;
-  TimeOfDay requestTime;
   SessionManager sessionManager = new SessionManager();
   @override
   void initState() {
     super.initState();
     userLocation = new UserLocation();
-    markers = List<ModifiedMarker>();
     selectedTime = TimeOfDay.now();
-    _initializeNumberPickers();
+    initializeNumberPickers();
   }
 
   Future<GoogleMap> getGoogleMap() async {
     await userLocation.getUserLocation();
-    Set<Marker> _markers = Set();
-    for (int i = 0; i < markers.length; i++) {
-      _markers.add(markers[i].getMarker());
-    }
     return googleMap = GoogleMap(
       initialCameraPosition: CameraPosition(
           target: LatLng(userLocation.getLatLng().latitude,
               userLocation.getLatLng().longitude),
           zoom: 18),
-      markers: Set<Marker>.of(_markers),
+      markers: markers,
       myLocationEnabled: true,
       zoomGesturesEnabled: true,
       mapToolbarEnabled: true,
@@ -84,6 +77,10 @@ class _RequestCreationState extends State<RequestCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          leading: BackButton(),
+          title: Text('Ride Creation'),
+        ),
         body: Stack(
           children: <Widget>[
             Container(
@@ -118,10 +115,6 @@ class _RequestCreationState extends State<RequestCreation> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text('Declare Your Points of The Ride'),
-                  Text(
-                    'Red for Destination',
-                    style: TextStyle(color: Colors.red),
-                  ),
                   Text(
                     'Blue for Meet Point',
                     style: TextStyle(color: Colors.blue),
@@ -169,7 +162,7 @@ class _RequestCreationState extends State<RequestCreation> {
                   ),
                   RaisedButton.icon(
                     color: Colors.black,
-                    onPressed: () => _showIntDialog(),
+                    onPressed: () => showIntDialog(),
                     icon: Icon(Icons.airline_seat_recline_normal,
                         color: Colors.amber),
                     label: new Text(
@@ -189,28 +182,27 @@ class _RequestCreationState extends State<RequestCreation> {
                         'Create Request',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: () {
-                        Request request = new Request(
-                          endPointLatitude: markers[0].marker.position.latitude,
-                          endPointLongitude:
-                              markers[0].marker.position.longitude,
-                          meetPoint: new MeetPoint(
-                              meetingTime: selectedTime,
-                              latitude: markers[1].marker.position.latitude,
-                              longitude: markers[1].marker.position.longitude),
-                          passenger: sessionManager.getUser(),
-                          numberOfNeededSeats: currentIntValue
-                        );
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RideSelector(request: request,),
-                            ));
-//                        print(
-//                            'thing ${markers[0].marker.position} ${markers[1].marker.position} ${markers[2].marker.position}');
-//                        print('thing ${selectedTime.runtimeType}');
-//                        print('thing ${currentIntValue}');
+                      onPressed: () async {
+                        ApiCaller apiCaller = new RequestApi();
+                        int startIndex = 0;
+                        if(markers.elementAt(0).markerId.value!='MeetPoint'){
+                          startIndex =1;
+                        }
+                        String status = await apiCaller.create(
+                          requestData: {
+                          'meetPointLatitude': markers.elementAt(startIndex).position.latitude,
+                          'meetPointLongitude' :markers.elementAt(startIndex).position.longitude,
+                          'endPointLatitude' : markers.elementAt(1-startIndex).position.latitude,
+                          'endPointLongitude' : markers.elementAt(1-startIndex).position.longitude,
+                          'numberOfNeededSeats' : currentIntValue,
+                          'time' : selectedTime,
+                          'response' : false
+                        },userData: {'userId' : sessionManager.getUser().id});
+                        if(status=='done'){
+                          Navigator.popAndPushNamed(context, MainPage.id);
+                        }else{
+                          Toast.show('Please Enter valid data', context);
+                        }
                       },
                     ),
                   )
@@ -219,7 +211,7 @@ class _RequestCreationState extends State<RequestCreation> {
         });
   }
 
-  void _initializeNumberPickers() {
+  void initializeNumberPickers() {
     integerNumberPicker = new NumberPicker.horizontal(
       initialValue: currentIntValue,
       minValue: 1,
@@ -229,7 +221,7 @@ class _RequestCreationState extends State<RequestCreation> {
     );
   }
 
-  Future _showIntDialog() async {
+  Future showIntDialog() async {
     await showDialog<int>(
       context: context,
       builder: (BuildContext context) {
@@ -263,7 +255,7 @@ class _RequestCreationState extends State<RequestCreation> {
       MarkerId markerId;
       Marker marker;
       markerId =
-          MarkerId(i == 0 ? 'Destination' : 'MeetPoint');
+          MarkerId(i == 0 ? 'MeetPoint' : 'Destination');
       marker = Marker(
           markerId: markerId,
           position: LatLng(
@@ -271,7 +263,7 @@ class _RequestCreationState extends State<RequestCreation> {
             userLocation.getLatLng().longitude,
           ),
           infoWindow: InfoWindow(
-              title: i == 0 ? 'Destination' : 'MeetPoint'),
+              title: i == 0 ? 'MeetPoint' : 'Destination'),
           draggable: true,
           onDragEnd: (LatLng position) {
             _onMarkerDragEnd(markerId, position);
@@ -282,16 +274,19 @@ class _RequestCreationState extends State<RequestCreation> {
                   : BitmapDescriptor.defaultMarkerWithHue(
                       BitmapDescriptor.hueBlue));
       setState(() {
-        markers.add(ModifiedMarker(marker));
+        markers.add(marker);
       });
     }
   }
 
   void _onMarkerDragEnd(MarkerId markerId, LatLng newPosition) async {
-    for (int i = 0; i < markers.length; i++) {
-      if (markers.elementAt(i).getMarker().markerId == markerId) {
+    for (int index = 0; index < markers.length; index++) {
+      if (markers.elementAt(index).markerId == markerId) {
         setState(() {
-          markers.elementAt(i).onMarkerDragEnd(newPosition);
+          markers.add(markers.elementAt(index).copyWith(
+              positionParam: newPosition
+          ));
+          markers.remove(markers.elementAt(index));
         });
         break;
       }
