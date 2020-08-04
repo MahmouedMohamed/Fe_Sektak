@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
-import 'requests_screen.dart';
-import 'rides_screen.dart';
+import 'package:fe_sektak/screens/home_screen.dart';
+import 'package:fe_sektak/screens/RequestScreens/requests_screen.dart';
+import 'package:fe_sektak/screens/RideScreens/rides_screen.dart';
 
 class MainPage extends StatefulWidget {
   static const String id = 'Main_Page';

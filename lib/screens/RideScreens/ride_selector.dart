@@ -6,8 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fe_sektak/models/ride.dart';
 import 'package:fe_sektak/models/request.dart';
-import 'home_screen.dart';
-import 'main_screen.dart';
+import '../main_screen.dart';
 
 class RideSelectionScreen extends StatefulWidget {
   static const String id = 'Ride_Selection';
@@ -50,15 +49,10 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
                 Text('Error Showing Rides, Please Restart ${snapshot.error}'),
           );
         } else {
-          return Container(
-            alignment: Alignment.center,
-            child: CupertinoActionSheet(
-              title: Text('Loading'),
-              actions: [
-                CupertinoActivityIndicator(
-                  radius: 50,
-                )
-              ],
+          return Center(
+            child: CupertinoActivityIndicator(
+              radius: 30,
+              animating: true,
             ),
           );
         }

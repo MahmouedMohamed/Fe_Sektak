@@ -240,6 +240,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.16.1"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   location_permissions:
     dependency: transitive
     description:
@@ -324,6 +331,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.13"
+  pusher_websocket_flutter:
+    dependency: "direct main"
+    description:
+      name: pusher_websocket_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   quiver:
     dependency: transitive
     description:

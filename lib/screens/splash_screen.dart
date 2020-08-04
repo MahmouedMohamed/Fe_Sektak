@@ -1,12 +1,9 @@
 import 'dart:async';
-
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:math';
-
-import 'home_screen.dart';
-import 'login_screen.dart';
+import 'RegisterationScreens/login_screen.dart';
 import 'main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +19,6 @@ class _SplashScreen extends State<SplashScreen>
   Animation<Color> _colorAnimation;
   double value = 0.0;
   double opacity = 0;
-  String quote = "";
   @override
   void initState() {
     super.initState();
@@ -30,7 +26,6 @@ class _SplashScreen extends State<SplashScreen>
         AnimationController(vsync: this, duration: Duration(seconds: 3));
     _colorAnimation = Tween<Color>(begin: Colors.green, end: Colors.blue)
         .animate(_animationController);
-    quote = ['Fe Sektak'].elementAt(Random().nextInt(1));
     sessionManager = new SessionManager();
     getSession();
     changeOpacity();
@@ -111,11 +106,11 @@ class _SplashScreen extends State<SplashScreen>
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width / 3,
                       height: MediaQuery.of(context).size.height / 3,
-//                      child: Image.asset('assets/images/ogive_version_2.png'),
+                      child: Image.asset('assets/images/road.png'),
                     ),
                   ),
                   Text(
-                    '${quote}',
+                    'Fe Sektak',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.0,

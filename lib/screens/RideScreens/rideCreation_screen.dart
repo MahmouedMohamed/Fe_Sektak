@@ -8,7 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:fe_sektak/models/user_location.dart';
 import 'package:toast/toast.dart';
-import 'main_screen.dart';
+import '../main_screen.dart';
 
 class RideCreation extends StatefulWidget {
   static const String id='RideCreation_Screen';
