@@ -1,9 +1,10 @@
-import 'package:fe_sektak/screens/requestCreation_screen.dart';
+import 'package:fe_sektak/screens/RegisterationScreens/login_screen.dart';
+import 'package:fe_sektak/screens/RequestScreens/requestCreation_screen.dart';
+import 'package:fe_sektak/screens/profile_screen.dart';
 import 'package:fe_sektak/session/session_manager.dart';
+import 'package:fe_sektak/screens/RideScreens/rideCreation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'login_screen.dart';
-import 'rideCreation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'Home_Screen';
@@ -20,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen>
   Animation<double> _menuScaleAnimation;
   Animation<Offset> _slideAnimation;
   SessionManager sessionManager = new SessionManager();
+
   @override
   void initState() {
     super.initState();
@@ -34,9 +36,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
-      body:  Stack(
+      body: Stack(
         children: <Widget>[menu(context), home(context)],
       ),
     );
@@ -89,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen>
                   actions: <Widget>[
                     IconButton(
                         icon: Icon(
-                          Icons.settings,
+                          Icons.notifications,
                           color: Colors.grey,
                         ),
                         padding: EdgeInsets.only(right: 10),
@@ -108,8 +109,8 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ),
                     preferredSize: Size.fromHeight(0)),
-                Wrap(
-                  alignment: WrapAlignment.center,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     CircleAvatar(
                       radius: 100,
@@ -234,8 +235,8 @@ class _HomeScreenState extends State<HomeScreen>
                         radius: 100,
                         backgroundColor: Colors.transparent,
                         child: ClipOval(
-                          child: Image.asset(
-                            'assets/images/2.jpg',
+                          child: Image.network(
+                            sessionManager.getUser().uPhoto,
                             fit: BoxFit.fill,
                             width: 120,
                             height: 120,
@@ -243,20 +244,29 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ),
                       RaisedButton.icon(
-                        label: Text('Profile',style: TextStyle(color: Colors.amber),),
+                        label: Text(
+                          'Profile',
+                          style: TextStyle(color: Colors.amber),
+                        ),
                         icon: Icon(
                           Icons.accessibility,
                           size: 30,
                           color: Colors.amber,
                         ),
                         color: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30))),
                         splashColor: Colors.blue,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, ProfileScreen.id);
+                        },
                       ),
                       RaisedButton.icon(
                         color: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30))),
                         onPressed: () {
                           sessionManager.logout();
                           Navigator.popAndPushNamed(context, LoginScreen.id);
@@ -273,8 +283,10 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       SizedBox(height: 10),
                       RaisedButton.icon(
-                        color: Colors.red,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                          color: Colors.red,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30))),
                           onPressed: () {},
                           icon: Icon(
                             Icons.warning,
@@ -282,8 +294,8 @@ class _HomeScreenState extends State<HomeScreen>
                             color: Colors.white,
                           ),
                           label: Text('Report a problem.',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15))),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 15))),
                     ],
                   ))),
             )),

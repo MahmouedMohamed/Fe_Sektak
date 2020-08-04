@@ -26,9 +26,13 @@ class FeSektak extends StatelessWidget {
           ThemeData(primaryColor: Colors.blue, accentColor: Color(0xFFFEF9EB)),
       initialRoute: SplashScreen.id,
       routes: <String, WidgetBuilder>{
+        SplashScreen.id: (context) => SplashScreen(),
         MainPage.id: (context) => MainPage(),
         HomeScreen.id: (context) => HomeScreen(),
+        SignupScreen.id: (context) => SignupScreen(),
         LoginScreen.id: (context) => LoginScreen(),
+        ProfileScreen.id: (context) => ProfileScreen(),
+        EditProfileScreen.id: (context) => EditProfileScreen(),
         RideCreation.id: (context) => RideCreation(),
         RideScreen.id: (context) => RideScreen(),
         RideTimeScreen.id: (context) => RideTimeScreen(),
