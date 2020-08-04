@@ -21,6 +21,10 @@ class SessionManager {
   loadSession() {
     List<String> userData = sharedPreferences.getStringList('user');
     print(userData);
+    List<String> list = userData[8].split(',');
+    list[0] = list[0].substring(1);
+    list[list.length-1] = list[list.length-1].substring(0,list[list.length-1].length-1);
+//    print(list);
 //    logout();
     user = new User(
         id: userData[0],
@@ -28,9 +32,11 @@ class SessionManager {
         name: userData[2],
         email: userData[3],
         phoneNumber: userData[4],
-        rate: userData[5],
-        car: Car(userData[6][0], userData[6][1], userData[6][2],userData[6][3]),
-        uPhoto: userData[7]);
+        rate: double.parse(userData[5]),
+        numberOfServices: int.parse(userData[6]),
+        totalReview: double.parse(userData[7]),
+        car: Car(list[0], list[1], list[2],list[3]),
+        uPhoto: userData[9]);
   }
 
   createSession(User user) {

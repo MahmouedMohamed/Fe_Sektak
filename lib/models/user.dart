@@ -8,7 +8,9 @@ class User {
   String phoneNumber;
   Car car;
   String uPhoto;
-  String rate;
+  double rate;
+  int numberOfServices;
+  double totalReview;
   User(
       {this.id,
       this.nationalId,
@@ -17,6 +19,8 @@ class User {
       this.phoneNumber,
       this.car,
       this.rate,
+      this.numberOfServices,
+      this.totalReview,
       this.uPhoto});
 
   List<String> toList() {
@@ -26,7 +30,9 @@ class User {
       name,
       email,
       phoneNumber,
-      rate,
+      rate.toString(),
+      numberOfServices.toString(),
+      totalReview.toString(),
       car==null? [null,null,null,null].toString() : car.toList().toString(),
       uPhoto
     ];
