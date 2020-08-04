@@ -30,10 +30,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     name.text = sessionManager.getUser().name;
     phoneNumber.text = sessionManager.getUser().phoneNumber;
-    carModel.text = sessionManager.getUser().car.carModel;
-    carColor.text = sessionManager.getUser().car.color;
-    carLicenseId.text = sessionManager.getUser().car.carLicenseId;
-    licenseId.text = sessionManager.getUser().car.licenseId;
+    if(sessionManager.getUser().car!=null){
+      carModel.text = sessionManager.getUser().car.carModel;
+      carColor.text = sessionManager.getUser().car.color;
+      carLicenseId.text = sessionManager.getUser().car.carLicenseId;
+      licenseId.text = sessionManager.getUser().car.licenseId;
+    }
   }
 
   @override
@@ -58,33 +60,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
           ),
           body: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-              image: AssetImage('assets/images/background.png'),
-              fit: BoxFit.cover,
-            )),
+//            decoration: BoxDecoration(
+//                image: DecorationImage(
+//              image: AssetImage('assets/images/background.png'),
+//              fit: BoxFit.cover,
+//            )
+//            ),
             child: SingleChildScrollView(
-              padding: EdgeInsets.only(top: 40, bottom: 10),
+              padding: EdgeInsets.only(top: 10, bottom: 10),
               child: Column(
                 children: <Widget>[
-                  SizedBox(
-                    height: 10,
-                  ),
-                  textField('Name', Colors.amber, false, null, name),
+                  textField('Name', Colors.grey, false, null, name),
                   textField(
-                      'Phone Number', Colors.amber, false, null, phoneNumber),
-                  textField('Car Model', Colors.amber, false, null, carModel),
-                  textField('Car License ID', Colors.amber, false, null,
+                      'Phone Number', Colors.grey, false, null, phoneNumber),
+                  textField('Car Model', Colors.grey, false, null, carModel),
+                  textField('Car License ID', Colors.grey, false, null,
                       carLicenseId),
-                  textField('Car Color', Colors.amber, false, null, carColor),
-                  textField('Lincese ID', Colors.amber, false, null, licenseId),
-                  textField('Password', Colors.amber, true, null, password,
+                  textField('Car Color', Colors.grey, false, null, carColor),
+                  textField('Lincese ID', Colors.grey, false, null, licenseId),
+                  textField('Password', Colors.grey, true, null, password,
                       null, 'Enter Your Password if No change'),
                   RaisedButton.icon(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     color: Colors.blueAccent,
                     onPressed: () async {
+                      print('thing ${sessionManager.getUser().id}');
+                      print('thing ${name.text}');
+                      print('thing ${password.text}');
+                      print('thing ${phoneNumber.text}');
+                      print('thing ${carModel.text.length}');
                       ApiCaller apiCaller = new UserApi();
                       String status = await apiCaller.update(userData: {
                         'userId': sessionManager.getUser().id,

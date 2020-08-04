@@ -99,11 +99,15 @@ class UserApi implements ApiCaller {
       'name': userData['name'],
       'password': userData['password'],
       'phoneNumber': userData['phoneNumber'],
-      'car[model]': userData['carModel'],
-      'car[color]': userData['carColor'],
-      'car[license]': userData['licenseId'],
-      'car[userLicense]': userData['carLicenseId'],
     };
+    if (userData['carLicenseId'] != 'null' && userData['carLicenseId'] != '') {
+      body.addAll({
+        'car[license]': userData['carLicenseId'].toString(),
+        'car[model]': userData['carModel'],
+        'car[color]': userData['color'],
+        'car[userLicense]': userData['licenceId'].toString(),
+      });
+    }
     var response = await http.put(Uri.encodeFull(URL + 'user'),
         headers: {"Accpet": "application/json"}, body: body);
     print(response.body);
