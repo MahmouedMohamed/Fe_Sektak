@@ -32,9 +32,15 @@ class RequestApi implements ApiCaller {
   }
 
   @override
-  delete({userData, rideData, requestData}) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  delete({userData, rideData, requestData}) async {
+    var response = await http.delete(Uri.encodeFull(URL + 'request?requestId=${requestData['requestId']}'),
+        headers: {"Accpet": "application/json"});
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      var convertDataToJson = jsonDecode(response.body);
+      return convertDataToJson['status'];
+    }
   }
 
   @override
