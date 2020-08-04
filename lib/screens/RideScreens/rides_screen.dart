@@ -6,8 +6,8 @@ import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
-import 'home_screen.dart';
-import 'main_screen.dart';
+import '../main_screen.dart';
+import 'package:fe_sektak/screens/MeetingScreens/rideTime_screen.dart';
 
 class RideScreen extends StatefulWidget {
   static const String id = 'Ride_Screen';
@@ -42,15 +42,10 @@ class _RideScreenState extends State<RideScreen> {
                 Text('Error Showing Rides, Please Restart ${snapshot.error}'),
           );
         } else {
-          return Container(
-            alignment: Alignment.center,
-            child: CupertinoActionSheet(
-              title: Text('Loading'),
-              actions: [
-                CupertinoActivityIndicator(
-                  radius: 50,
-                )
-              ],
+          return Center(
+            child: CupertinoActivityIndicator(
+              radius: 30,
+              animating: true,
             ),
           );
         }
@@ -81,7 +76,7 @@ class _RideScreenState extends State<RideScreen> {
   Widget showBody() {
     return Container(
       padding: EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
-      decoration: BoxDecoration(color: Colors.lightBlueAccent),
+      decoration: BoxDecoration(color: Colors.white),
       height: double.infinity,
       child: ListView(
         children: rides.map((ride) {
@@ -101,7 +96,7 @@ class _RideScreenState extends State<RideScreen> {
             ),
             title: ride.available
                 ? Text(
-                    'Available',
+                    'Available ${ride.rideTime.hour}:${ride.rideTime.minute}',
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 24.0,
@@ -140,6 +135,24 @@ class _RideScreenState extends State<RideScreen> {
               ),
             ),
             children: <Widget>[
+              compare(ride.rideTime, TimeOfDay.now())
+                  ? RaisedButton(
+                color: Colors.transparent,
+                      onPressed: () {
+//                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RideTimeScreen(ride: ride),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Start the trip!',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    )
+                  : SizedBox(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -149,11 +162,11 @@ class _RideScreenState extends State<RideScreen> {
                       style: TextStyle(color: Colors.red),
                     ),
                     onPressed: () async {
-                      String status = await apiRideCaller.delete(rideData: {'rideId': ride.rideId});
-                      if(status=='done'){
+                      String status = await apiRideCaller
+                          .delete(rideData: {'rideId': ride.rideId});
+                      if (status == 'done') {
                         setState(() {});
-                      }
-                      else{
+                      } else {
                         Toast.show('Error', context);
                       }
                     },
@@ -269,5 +282,10 @@ class _RideScreenState extends State<RideScreen> {
         }).toList(),
       ),
     );
+  }
+
+  compare(TimeOfDay rideTime, TimeOfDay timeOfDay) {
+    return rideTime.hour < timeOfDay.hour ||
+        rideTime.hour == timeOfDay.hour && rideTime.minute < timeOfDay.minute;
   }
 }
