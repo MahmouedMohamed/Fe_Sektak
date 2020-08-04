@@ -81,6 +81,8 @@ class _RideScreenState extends State<RideScreen> {
       child: ListView(
         children: rides.map((ride) {
           return Card(
+            color: Colors.white,
+              elevation: 5.0,
               child: ExpansionTile(
             leading: ConstrainedBox(
               constraints: BoxConstraints(

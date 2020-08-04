@@ -95,7 +95,10 @@ class _RideCreationState extends State<RideCreation> {
             Align(
                 alignment: Alignment.bottomRight,
                 child: RaisedButton(
-                  child: Text('Begin Creation'),
+                  color: Colors.green,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                  child: Text('Begin Creation',style: TextStyle(color: Colors.white),),
                   onPressed: () {
                     onButtonPressed();
                   },
@@ -169,8 +172,11 @@ class _RideCreationState extends State<RideCreation> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: RaisedButton.icon(
-                      icon: Icon(Icons.arrow_forward),
-                      label: Text('Create Ride'),
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
+                      icon: Icon(Icons.arrow_forward,color: Colors.green,),
+                      label: Text('Create Ride !',style: TextStyle(fontSize: 16,color: Colors.green),),
                       onPressed: () async {
                         int startIndex = 0;
                         if(markers.elementAt(0).markerId.value!='Source'){

@@ -61,7 +61,7 @@ class _RequestScreenState extends State<RequestScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text('My Requests'),
+          title: Text('My Requests',style: TextStyle(color: Colors.amber),),
           leading: BackButton(
             onPressed: () {
               Navigator.popAndPushNamed(context, MainPage.id);
@@ -85,37 +85,7 @@ class _RequestScreenState extends State<RequestScreen> {
                   borderRadius: BorderRadius.all(Radius.circular(5))),
               margin: EdgeInsets.only(left: 5, right: 5, top: 10),
               child: ExpansionTile(
-                leading: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: 44,
-                    minHeight: 44,
-                    maxWidth: 84,
-                    maxHeight: 84,
-                  ),
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundImage:
-                        NetworkImage(sessionManager.getUser().uPhoto),
-                  ),
-                ),
-                title: request.response
-                    ? Text(
-                        'Accepted',
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    : Text(
-                        'Waiting for answer',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                subtitle: FittedBox(
+                title: FittedBox(
                   child: Row(
                     children: <Widget>[
                       Column(
@@ -146,21 +116,37 @@ class _RequestScreenState extends State<RequestScreen> {
                     ],
                   ),
                 ),
+                leading: request.response
+                    ? Icon(Icons.check,color: Colors.green,size: 50,)
+                    : Icon(Icons.access_alarm,color: Colors.grey,size: 50,),
                 children: <Widget>[
                   request.response
                       ? Column(children: <Widget>[
-                          Text('Ride Id: ${request.rideId}'),
+                          compare(request.meetPoint.meetingTime,
+                                  TimeOfDay.now())
+                              ? Text('It\'s up Now !',style: TextStyle(color: Colors.green[700],fontSize: 20),)
+                              : Text(
+                                  'Meeting Time ${request.meetPoint.meetingTime.hour}:${request.meetPoint.meetingTime.minute}'),
                           compare(request.meetPoint.meetingTime,
                                   TimeOfDay.now())
                               ? RaisedButton(
+                                  color: Colors.green,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(30))),
                                   onPressed: () async {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => MeetTimeScreen(request: request),
+                                        builder: (context) =>
+                                            MeetTimeScreen(request: request),
                                       ),
                                     );
-                                  }, child: Text('Start'))
+                                  },
+                                  child: Text(
+                                    'Start Ride!',
+                                    style: TextStyle(color: Colors.white),
+                                  ))
                               : Text('No action available')
                         ])
                       : Column(
@@ -201,31 +187,34 @@ class _RequestScreenState extends State<RequestScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
                                 RaisedButton(
-                                  color: Colors.black,
+                                  color: Colors.blue,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(30))),
                                   onPressed: () {},
                                   child: Text(
                                     'Update',
-                                    style: TextStyle(color: Colors.blue),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                                 RaisedButton(
-                                  color: Colors.black,
+                                  color: Colors.red,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(30))),
                                   onPressed: () async {
                                     ApiCaller apiCaller = new RequestApi();
-                                    String status = await apiCaller.delete(requestData: {'requestId' : request.requestId});
-                                    if(status == 'done'){
+                                    String status = await apiCaller.delete(
+                                        requestData: {
+                                          'requestId': request.requestId
+                                        });
+                                    if (status == 'done') {
                                       setState(() {});
                                     }
                                   },
                                   child: Text(
                                     'Delete',
-                                    style: TextStyle(color: Colors.red),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 )
                               ],

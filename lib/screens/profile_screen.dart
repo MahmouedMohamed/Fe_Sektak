@@ -31,14 +31,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           leading: BackButton(),
         ),
-        body: Container(
+        body: SingleChildScrollView(
+            child: Container(
           decoration: BoxDecoration(
               image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
+            colorFilter: ColorFilter.mode(Colors.blue, BlendMode.darken),
             fit: BoxFit.cover,
           )),
           child: Padding(
-            padding: EdgeInsets.only(top: 40, bottom: 10),
+            padding: EdgeInsets.only(top: 20, bottom: 10),
             child: Column(
               children: <Widget>[
                 GestureDetector(
@@ -64,53 +66,127 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontSize: 30,
                       letterSpacing: 1.5),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text('Phone Number : ${sessionManager.getUser().phoneNumber}',
-                    style: TextStyle(
-                        decoration: TextDecoration.none,
-                        color: Colors.white,
-                        fontSize: 18)),
-                Text('Rate : ${sessionManager.getUser().rate}',
-                    style: TextStyle(
-                        decoration: TextDecoration.none,
-                        color: Colors.white,
-                        fontSize: 18)),
                 Container(
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.white.withOpacity(0.3),
-                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  padding:
+                      EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
+                  margin:
+                      EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                   child: Column(
                     children: <Widget>[
-                      Text(
-                          'Car Model : ${sessionManager.getUser().car.carModel}',
-                          style: TextStyle(
-                              decoration: TextDecoration.none,
-                              color: Colors.black,
-                              fontSize: 18,
-                              height: 1.5)),
-                      Text('Car Color : ${sessionManager.getUser().car.color}',
-                          style: TextStyle(
-                              decoration: TextDecoration.none,
-                              color: Colors.black,
-                              fontSize: 18,
-                              height: 1.5)),
-                      Text(
-                          'Car License ID : ${sessionManager.getUser().car.carLicenseId}',
-                          style: TextStyle(
-                              decoration: TextDecoration.none,
-                              color: Colors.black,
-                              fontSize: 18,
-                              height: 1.5)),
-                      Text(
-                          'License ID : ${sessionManager.getUser().car.licenseId}',
-                          style: TextStyle(
-                              decoration: TextDecoration.none,
-                              color: Colors.black,
-                              fontSize: 18,
-                              height: 1.5)),
+                      Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Personal Info',
+                            style: TextStyle(fontSize: 22),
+                          )),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text.rich(
+                        TextSpan(text: 'Phone Number: ', children: [
+                          TextSpan(
+                              text: '${sessionManager.getUser().phoneNumber}',
+                              style: TextStyle(color: Colors.blue[800]))
+                        ]),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      Text.rich(
+                        TextSpan(text: 'Rate: ', children: [
+                          TextSpan(
+                              text: '${sessionManager.getUser().rate}',
+                              style: TextStyle(color: Colors.blue[800]))
+                        ]),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      Text.rich(
+                        TextSpan(text: 'Total Review: ', children: [
+                          TextSpan(
+                              text: '${sessionManager.getUser().totalReview}',
+                              style: TextStyle(color: Colors.blue[800]))
+                        ]),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      Text.rich(
+                        TextSpan(text: 'Services you made: ', children: [
+                          TextSpan(
+                              text:
+                                  '${sessionManager.getUser().numberOfServices}\n',
+                              style: TextStyle(color: Colors.blue[800]),
+                              children: [
+                                sessionManager.getUser().numberOfServices == 0
+                                    ? TextSpan(
+                                        text:
+                                            'Only ${sessionManager.getUser().numberOfServices} Services?\nWe are waiting more from you!',
+                                        style:
+                                            TextStyle(color: Colors.redAccent[700]))
+                                    : TextSpan(
+                                        text:
+                                            'What a society Lover!',
+                                        style:
+                                            TextStyle(color: Colors.green[800]))
+                              ])
+                        ]),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white, fontSize: 18,),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  padding:
+                      EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
+                  margin:
+                      EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Car Info',
+                            style: TextStyle(fontSize: 22),
+                          )),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text.rich(
+                        TextSpan(text: 'Car Model: ', children: [
+                          TextSpan(
+                              text: sessionManager.getUser().car==null? 'N/A' : '${sessionManager.getUser().car.carModel}',
+                              style: TextStyle(color: Colors.blue[800]))
+                        ]),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      Text.rich(
+                        TextSpan(text: 'Car Color: ', children: [
+                          TextSpan(
+                              text: sessionManager.getUser().car==null? 'N/A' : '${sessionManager.getUser().car.color}',
+                              style: TextStyle(color: Colors.blue[800]))
+                        ]),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      Text.rich(
+                        TextSpan(text: 'Car License ID: ', children: [
+                          TextSpan(
+                              text: sessionManager.getUser().car==null? 'N/A' : '${sessionManager.getUser().car.carLicenseId}',
+                              style: TextStyle(color: Colors.blue[800]))
+                        ]),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      Text.rich(
+                        TextSpan(text: 'License ID: ', children: [
+                          TextSpan(
+                              text: sessionManager.getUser().car==null? 'N/A' : '${sessionManager.getUser().car.licenseId}',
+                              style: TextStyle(color: Colors.blue[800]))
+                        ]),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                     ],
                   ),
                 ),
@@ -154,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-        ));
+        )));
   }
 
   void onImagePressed(context) {

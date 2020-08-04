@@ -1,3 +1,5 @@
+import 'package:fe_sektak/api_callers/api_caller.dart';
+import 'package:fe_sektak/api_callers/notification_api.dart';
 import 'package:fe_sektak/screens/RegisterationScreens/login_screen.dart';
 import 'package:fe_sektak/screens/RequestScreens/requestCreation_screen.dart';
 import 'package:fe_sektak/screens/profile_screen.dart';
@@ -5,6 +7,8 @@ import 'package:fe_sektak/session/session_manager.dart';
 import 'package:fe_sektak/screens/RideScreens/rideCreation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'notification_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'Home_Screen';
@@ -21,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen>
   Animation<double> _menuScaleAnimation;
   Animation<Offset> _slideAnimation;
   SessionManager sessionManager = new SessionManager();
+  int notificationCount = 0;
 
   @override
   void initState() {
@@ -42,7 +47,49 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
-
+  Stream<int> refresher(Duration interval) async* {
+    while (true) {
+//      print(notificationCount);
+      await Future.delayed(interval);
+      ApiCaller apiCaller = new NotificationApi();
+      notificationCount =
+      await apiCaller.get(userData: {'userId' : sessionManager.getUser().id});
+      yield notificationCount;
+    }
+  }
+  Widget showBody(){
+    return GestureDetector(
+      child: Padding(
+        padding: EdgeInsets.only(right: 20,top: 10),
+        child: Stack(
+          children: <Widget>[
+            Icon(Icons.notifications,color: Colors.black,size: 30,), Container(
+              padding: EdgeInsets.all(1),
+              decoration: new BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              constraints: BoxConstraints(
+                minWidth: 14,
+                minHeight: 12,
+              ),
+              child: new Text(
+                '$notificationCount',
+                style: new TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+      onTap: (){
+        Navigator.pushNamed(context, NotificationScreen.id);
+      },
+    );
+  }
   Widget home(context) {
     return AnimatedPositioned(
         top: 0,
@@ -88,13 +135,13 @@ class _HomeScreenState extends State<HomeScreen>
                     style: TextStyle(color: Colors.black),
                   ),
                   actions: <Widget>[
-                    IconButton(
-                        icon: Icon(
-                          Icons.notifications,
-                          color: Colors.grey,
-                        ),
-                        padding: EdgeInsets.only(right: 10),
-                        onPressed: () {}),
+                    StreamBuilder(
+                      stream: refresher(Duration(seconds: 2)),
+                      initialData: notificationCount,
+                      builder: (BuildContext context, snapshot) {
+                        return showBody();
+                      },
+                    ),
                   ],
                 ),
                 PreferredSize(

@@ -118,7 +118,9 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text('Rate : ${ride.driver.rate}'),
+                      Text('Rate : ${ride.driver.rate}',style: TextStyle(color: Colors.amber),),
+                      Text('Total Review : ${ride.driver.totalReview}'),
+                      Text('Number Of Services : ${ride.driver.numberOfServices}'),
                       FlatButton(
                         child: Text(
                           'Send Request',
@@ -127,7 +129,6 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
                         onPressed: () async {
                           ApiCaller apiRequestCaller = new RequestApi();
                           request.rideId = ride.rideId;
-                          print('thing ${request.requestId} ${ride.rideId}');
                           String status = await apiRequestCaller.update(
                               requestData: {
                                 'request': request
