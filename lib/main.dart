@@ -1,6 +1,7 @@
-import 'package:fe_sektak/screens/edit_profile.dart';
-import 'package:fe_sektak/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:fe_sektak/screens/edit_profile.dart';
+import 'package:fe_sektak/screens/notification_screen.dart';
+import 'package:fe_sektak/screens/profile_screen.dart';
 import 'package:fe_sektak/screens/RegisterationScreens/login_screen.dart';
 import 'package:fe_sektak/screens/RegisterationScreens/signup_screen.dart';
 import 'package:fe_sektak/screens/home_screen.dart';
@@ -39,6 +40,7 @@ class FeSektak extends StatelessWidget {
         RequestScreen.id: (context) => RequestScreen(),
         RequestCreation.id: (context) => RequestCreation(),
         RideSelectionScreen.id: (context) => RideSelectionScreen(request: null,),
+        NotificationScreen.id: (context) => NotificationScreen(),
       },
 //      darkTheme: ThemeData.dark(),
     );

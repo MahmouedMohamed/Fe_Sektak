@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fe_sektak/models/notification.dart';
+
 import 'api_caller.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,15 +25,32 @@ class NotificationApi implements ApiCaller{
   }
 
   @override
-  get({userData, requestData}) {
-    // TODO: implement get
-    throw UnimplementedError();
+  get({userData, requestData}) async {
+    var response = await http.get(Uri.encodeFull(URL + 'getUnReadNotificationsCount?userId=${userData['userId'].toString()}'),
+        headers: {"Accpet": "application/json"});
+    var convertDataToJson = jsonDecode(response.body);
+    return convertDataToJson['count'];
   }
 
   @override
-  getAll({userData, requestData}) {
-    // TODO: implement getAll
-    throw UnimplementedError();
+  getAll({userData, requestData}) async {
+    var response = await http.get(Uri.encodeFull(URL + 'showNotifications?userId=${userData['userId'].toString()}'),
+        headers: {"Accpet": "application/json"});
+    var convertDataToJson = jsonDecode(response.body);
+    print(response.body);
+
+    List<CustomNotification> notifications = new List<CustomNotification>();
+    convertDataToJson['notifications'].forEach((notification){
+      print(notification['data']);
+      notifications.add(CustomNotification(
+        notifyingUser: notification['data']['user'].toString(),
+        eventId: notification['data']['requestId'].toString(),
+        type: notification['type'].split('\\')[2],
+        readAt: notification['read_at']!=null? DateTime.parse(notification['read_at']):null,
+        createdAt: DateTime.parse(notification['created_at'])
+      ));
+    });
+    return notifications;
   }
 
   @override
