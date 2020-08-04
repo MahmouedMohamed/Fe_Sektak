@@ -1,12 +1,11 @@
 import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/models/user.dart';
-import 'package:fe_sektak/screens/home_screen.dart';
-import 'package:fe_sektak/screens/signup_screen.dart';
+import 'package:fe_sektak/screens/RegisterationScreens/signup_screen.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
+import '../main_screen.dart';
 
-import 'main_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   static const String id ='Login_Screen';

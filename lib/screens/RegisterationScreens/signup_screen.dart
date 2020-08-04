@@ -1,4 +1,4 @@
-import 'package:fe_sektak/screens/login_screen.dart';
+import 'package:fe_sektak/screens/RegisterationScreens/login_screen.dart';
 import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/widgets/text_field.dart';
@@ -74,14 +74,14 @@ class _SignupScreenState extends State<SignupScreen> {
               scale: 2.5,
             ),
             textField(
-                'Full name', Icons.person, Colors.blue, false, null, name),
-            textField('Email', Icons.email, Colors.blue, false, null, email),
+                'Full name', Colors.blue, false, null, name,Icons.person),
+            textField('Email', Colors.blue, false, null, email,Icons.email),
             textField(
-                'Password', Icons.lock, Colors.blue, true, null, password),
-            textField('Mobile Number', Icons.mobile_screen_share, Colors.blue,
-                false, TextInputType.number, mobileNumber),
-            textField('National ID', Icons.mobile_screen_share, Colors.blue,
-                false, TextInputType.number, nationalId),
+                'Password', Colors.blue, true, null, password,Icons.lock),
+            textField('Mobile Number', Colors.blue,
+                false, TextInputType.number, mobileNumber,Icons.mobile_screen_share),
+            textField('National ID', Colors.blue,
+                false, TextInputType.number, nationalId,Icons.mobile_screen_share),
             CheckboxListTile(
               title: Text('Have a Car? '),
               value: hasCar,
@@ -92,14 +92,14 @@ class _SignupScreenState extends State<SignupScreen> {
             Visibility(
               child: Column(
                 children: <Widget>[
-                  textField('Licence ID', Icons.directions_car, Colors.blue,
-                      false, null, licenceId),
-                  textField('Car Number', Icons.directions_car, Colors.blue,
-                      false, null, carLicense),
-                  textField('Car Color', Icons.color_lens, Colors.blue, false,
-                      null, carColor),
-                  textField('Car Model', Icons.local_car_wash, Colors.blue,
-                      false, null, carModel),
+                  textField('Licence ID', Colors.blue,
+                      false, null, licenceId,Icons.directions_car),
+                  textField('Car Number', Colors.blue,
+                      false, null, carLicense,Icons.directions_car),
+                  textField('Car Color', Colors.blue, false,
+                      null, carColor, Icons.color_lens),
+                  textField('Car Model', Colors.blue,
+                      false, null, carModel,Icons.local_car_wash),
                 ],
               ),
               visible: hasCar ? true : false,
