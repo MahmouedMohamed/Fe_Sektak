@@ -25,7 +25,7 @@ class RideApi implements ApiCaller {
     };
     var response = await http.post(Uri.encodeFull(URL + 'ride'),
         headers: {"Accpet": "application/json"}, body: body);
-    print('thing ${response.body}');
+//    print('thing ${response.body}');
     if (response.statusCode != 200) {
       return null;
     } else {
@@ -36,20 +36,20 @@ class RideApi implements ApiCaller {
 
   @override
   delete({userData, rideData, requestData}) async {
-    print('thing ${rideData['rideId']}');
     var response = await http.delete(Uri.encodeFull(URL + 'ride?rideId=${rideData['rideId']}'),
         headers: {"Accpet": "application/json"});
-    print('thing ${response.body}');
     if (response.statusCode != 200) {
       return null;
     } else {
       var convertDataToJson = jsonDecode(response.body);
+      print('thing ${convertDataToJson['status']}');
       return convertDataToJson['status'];
     }
   }
 
   TimeOfDay getTime(time) {
     List<String> array = time.toString().split(':');
+//    print('thing $array');
     return TimeOfDay(hour: int.parse(array[0]), minute: int.parse(array[1]));
   }
 
@@ -60,7 +60,7 @@ class RideApi implements ApiCaller {
         Uri.encodeFull(URL + 'availableRides?id=${requestData['requestId']}'),
         headers: {"Accpet": "application/json"});
     if (response.statusCode != 200) {
-      print('thing ${requestData['requestId']}');
+//      print('thing ${requestData['requestId']}');
       return null;
     } else {
       var convertDataToJson = jsonDecode(response.body);
@@ -127,7 +127,7 @@ class RideApi implements ApiCaller {
             endPointLatitude: ride['destinationLatitude'],
             endPointLongitude: ride['destinationLongitude'],
             availableSeats: ride['availableSeats'],
-            rideTime: ride['rideTime'],
+            rideTime: getTime(ride['time']),
             available: ride['available'] == 1 ? true : false));
       });
     }
@@ -137,7 +137,7 @@ class RideApi implements ApiCaller {
           'userId': returnedRides[i].requests[j].passenger.id.toString()
         });
         returnedRides[i].requests[j].passenger = user;
-        print(user);
+//        print(user);
       }
     }
     return returnedRides;
