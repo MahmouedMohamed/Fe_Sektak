@@ -48,7 +48,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               child: SingleChildScrollView(
                   child: Stepper(
                       onStepContinue: () async {
-                        ApiCaller apiCaller = new ReviewApi();
+                        ReviewApi apiCaller = new ReviewApi();
                         String status = await apiCaller.create(userData: {
                           'userId': ride.requests.elementAt(step).passenger.id,
                           'rate': rates[step]

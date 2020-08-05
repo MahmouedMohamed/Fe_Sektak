@@ -18,7 +18,7 @@ class RequestScreen extends StatefulWidget {
 class _RequestScreenState extends State<RequestScreen> {
   List<Request> requests = new List<Request>();
   SessionManager sessionManager = new SessionManager();
-  ApiCaller apiRequestCaller = new RequestApi();
+  RequestApi apiRequestCaller = new RequestApi();
   Future<List<Request>> getRequests() async {
     List<Request> requests = await apiRequestCaller
         .getAll(userData: {'userId': sessionManager.getUser().id});
@@ -79,7 +79,7 @@ class _RequestScreenState extends State<RequestScreen> {
         child: ListView(
             children: requests.map((request) {
           return Card(
-              color: Colors.amber,
+              color: Colors.white,
               elevation: 4,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -203,7 +203,7 @@ class _RequestScreenState extends State<RequestScreen> {
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(30))),
                                   onPressed: () async {
-                                    ApiCaller apiCaller = new RequestApi();
+                                    RequestApi apiCaller = new RequestApi();
                                     String status = await apiCaller.delete(
                                         requestData: {
                                           'requestId': request.requestId

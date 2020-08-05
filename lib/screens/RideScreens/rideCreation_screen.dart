@@ -22,7 +22,7 @@ class _RideCreationState extends State<RideCreation> {
   TimeOfDay selectedTime;
   NumberPicker integerNumberPicker;
   int currentIntValue = 4;
-  ApiCaller apiCaller = new RideApi();
+  RideApi apiCaller = new RideApi();
   Set<Marker> markers = new Set();
   SessionManager sessionManager = new SessionManager();
   @override

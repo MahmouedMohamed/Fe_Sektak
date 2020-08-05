@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/notification_api.dart';
 import 'package:fe_sektak/api_callers/ride_api.dart';
+import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/models/ride.dart';
 import 'package:fe_sektak/models/user_location.dart';
 import 'package:fe_sektak/session/session_manager.dart';
@@ -28,7 +29,7 @@ class _RideTimeScreenState extends State<RideTimeScreen> {
   UserLocation userLocation;
   SessionManager sessionManager = new SessionManager();
   Set<Marker> markers = new Set();
-  ApiCaller apiNotificationCaller = new NotificationApi();
+  UserApi apiUserCaller = new UserApi();
 
   _RideTimeScreenState(this.ride);
 
@@ -40,7 +41,7 @@ class _RideTimeScreenState extends State<RideTimeScreen> {
 
   Future<void> sendLocation() async {
     Future.delayed(Duration(seconds: 10), () async {
-      await apiNotificationCaller.create(userData: {
+      await apiUserCaller.sendUserLocation(userData: {
         'userId': sessionManager.getUser().id,
         'locationLatitude': userLocation.getLatLng().latitude,
         'locationLongitude': userLocation.getLatLng().longitude
@@ -140,7 +141,7 @@ class _RideTimeScreenState extends State<RideTimeScreen> {
   }
 
   deleteRide() async {
-    ApiCaller apiCaller = new RideApi();
+    RideApi apiCaller = new RideApi();
     return await apiCaller.delete(rideData: {'rideId': ride.rideId});
   }
 

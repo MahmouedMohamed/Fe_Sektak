@@ -16,10 +16,10 @@ class RideScreen extends StatefulWidget {
 }
 
 class _RideScreenState extends State<RideScreen> {
-  ApiCaller apiRideCaller = new RideApi();
+  RideApi apiRideCaller = new RideApi();
   List<Ride> rides = new List<Ride>();
   SessionManager sessionManager = new SessionManager();
-  ApiCaller apiRequestCaller = new RequestApi();
+  RequestApi apiRequestCaller = new RequestApi();
 
   Future<List<Ride>> getRides() async {
     List<Ride> rides = await apiRideCaller
@@ -139,9 +139,12 @@ class _RideScreenState extends State<RideScreen> {
             children: <Widget>[
               compare(ride.rideTime, TimeOfDay.now())
                   ? RaisedButton(
-                color: Colors.transparent,
+                color: Colors.green,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(30))),
                       onPressed: () {
-//                        Navigator.pop(context);
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -151,17 +154,21 @@ class _RideScreenState extends State<RideScreen> {
                       },
                       child: Text(
                         'Start the trip!',
-                        style: TextStyle(color: Colors.green),
+                        style: TextStyle(color: Colors.white),
                       ),
                     )
                   : SizedBox(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  FlatButton(
+                  RaisedButton(
+                    color: Colors.red,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(30))),
                     child: Text(
                       'Delete Ride',
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {
                       String status = await apiRideCaller
@@ -173,10 +180,14 @@ class _RideScreenState extends State<RideScreen> {
                       }
                     },
                   ),
-                  FlatButton(
+                  RaisedButton(
+                    color: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(30))),
                     child: Text(
                       'Update Ride',
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {},
                   )
@@ -238,13 +249,17 @@ class _RideScreenState extends State<RideScreen> {
                                     'Delete Request',
                                     style: TextStyle(color: Colors.red),
                                   ),
-                                  onPressed: () {
-                                    apiRequestCaller.delete(rideData: {
-                                      'rideId': ride.rideId
-                                    }, requestData: {
+                                  onPressed: () async {
+                                    String status = await apiRequestCaller.reject(requestData: {
                                       'requestId':
                                           ride.requests[index].requestId
                                     });
+                                    if (status == 'done') {
+                                      print(status);
+                                      setState(() {});
+                                    } else {
+                                      Toast.show('Error!', context);
+                                    }
                                   },
                                 ),
                                 SizedBox(
@@ -257,7 +272,7 @@ class _RideScreenState extends State<RideScreen> {
                                   ),
                                   onPressed: () async {
                                     String status = await apiRequestCaller
-                                        .update(requestData: {
+                                        .acceptRequest(requestData: {
                                       'requestId':
                                           ride.requests[index].requestId
                                     }, rideData: {

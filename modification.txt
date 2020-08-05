@@ -2,10 +2,10 @@
 *2-create meeting operation(screens, real time pusher or database,everything..)
 *3-review
 *4-notification
-update ride and update request
-// Clean code, update api naming
-5-ui upgrade + some documention
-6-there is time? add some features..
+5-update ride and update request
+6-Clean code, update api naming
+7-ui upgrade + tests +some documention
+8-there is time? add some features..
 features : *notifications using database & stream,
 	   profile photos 
 

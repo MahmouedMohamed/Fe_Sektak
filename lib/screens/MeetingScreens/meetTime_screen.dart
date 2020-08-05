@@ -114,8 +114,8 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
       await userLocation.getUserLocation();
     }
     print('thing near');
-    ApiCaller apiCaller = new UserApi();
-    User user = await apiCaller.getById(Data: {'userId': userId});
+    UserApi apiCaller = new UserApi();
+    User user = await apiCaller.getById(userData: {'userId': userId});
     Pusher.unsubscribe('ride.${request.rideId}');
     return AlertDialog(
       title: Text("Did you got him?"),
@@ -129,7 +129,7 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
         FlatButton(
             child: Text("Press here if you saw him!"),
             onPressed: () async {
-              ApiCaller apiCaller = new RequestApi();
+              RequestApi apiCaller = new RequestApi();
               String status = await apiCaller
                   .delete(requestData: {'requestId': request.requestId});
               if (status == 'done') {

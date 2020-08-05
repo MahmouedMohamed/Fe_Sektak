@@ -23,7 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController carModel = new TextEditingController();
   TextEditingController licenceId = new TextEditingController();
 
-  ApiCaller apiCaller = new UserApi();
+  UserApi apiCaller = new UserApi();
   @override
   void initState() {
     super.initState();
@@ -112,7 +112,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             RaisedButton(
               onPressed: () async {
-                String status = await apiCaller.create(userData: {
+                String status = await apiCaller.register(userData: {
                   'name': name.text,
                   'email': email.text,
                   'password': password.text,

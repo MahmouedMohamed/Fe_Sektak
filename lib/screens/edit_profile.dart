@@ -90,7 +90,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       print('thing ${password.text}');
                       print('thing ${phoneNumber.text}');
                       print('thing ${carModel.text.length}');
-                      ApiCaller apiCaller = new UserApi();
+                      UserApi apiCaller = new UserApi();
                       String status = await apiCaller.update(userData: {
                         'userId': sessionManager.getUser().id,
                         'name': name.text,
@@ -102,7 +102,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         'carLicenseId': carLicenseId.text,
                       });
                       if(status=='done'){
-                        User user = await apiCaller.getById(Data: {'userId' : sessionManager.getUser().id});
+                        User user = await apiCaller.getById(userData: {'userId' : sessionManager.getUser().id});
                         if(user!=null){
                           sessionManager.logout();
                           sessionManager.createSession(user);

@@ -7,7 +7,7 @@ import 'package:fe_sektak/models/notification.dart';
 import 'main_screen.dart';
 
 class NotificationScreen extends StatelessWidget {
-  final ApiCaller apiCaller = new NotificationApi();
+  final NotificationApi apiCaller = new NotificationApi();
   final SessionManager sessionManager = new SessionManager();
   static final id = 'Notification_Screen';
   Future<List<CustomNotification>> getNotifications() async {

@@ -20,7 +20,7 @@ class RideSelectionScreen extends StatefulWidget {
 class _RideSelectionScreen extends State<RideSelectionScreen> {
   Request request;
   _RideSelectionScreen(this.request);
-  ApiCaller apiRideCaller = new RideApi();
+  RideApi apiRideCaller = new RideApi();
   List<Ride> rides;
   SessionManager sessionManager = new SessionManager();
   @override
@@ -127,14 +127,14 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
                           style: TextStyle(color: Colors.green),
                         ),
                         onPressed: () async {
-                          ApiCaller apiRequestCaller = new RequestApi();
+                          RequestApi apiRequestCaller = new RequestApi();
                           request.rideId = ride.rideId;
-                          String status = await apiRequestCaller.update(
+                          String status = await apiRequestCaller.sendRequest(
                               requestData: {
-                                'request': request
+                                'requestId': request.requestId
                               },
-                              userData: {
-                                'userId': sessionManager.getUser().id
+                              rideData: {
+                                'rideId': ride.rideId
                               });
                           if (status == 'done') {
                             Navigator.popAndPushNamed(context, MainPage.id);

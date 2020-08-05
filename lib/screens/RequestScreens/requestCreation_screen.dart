@@ -184,7 +184,7 @@ class _RequestCreationState extends State<RequestCreation> {
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: () async {
-                        ApiCaller apiCaller = new RequestApi();
+                        RequestApi apiCaller = new RequestApi();
                         int startIndex = 0;
                         if(markers.elementAt(0).markerId.value!='MeetPoint'){
                           startIndex =1;

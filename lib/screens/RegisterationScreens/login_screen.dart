@@ -11,7 +11,7 @@ class LoginScreen extends StatelessWidget {
   static const String id ='Login_Screen';
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
-  ApiCaller apiCaller = new UserApi();
+  UserApi apiCaller = new UserApi();
   SessionManager sessionManager = new SessionManager();
   @override
   Widget build(BuildContext context) {
@@ -131,7 +131,7 @@ class LoginScreen extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
                                 onPressed: () async {
-                                  User user = await apiCaller.get(userData : {'email' : email.text,'password' : password.text});
+                                  User user = await apiCaller.login(userData : {'email' : email.text,'password' : password.text});
                                   if(user!=null){
                                     sessionManager.createSession(user);
                                     Navigator.popAndPushNamed(context, MainPage.id);

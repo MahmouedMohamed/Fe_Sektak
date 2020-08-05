@@ -211,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   color: Colors.red,
                   onPressed: () async {
-                    ApiCaller apiCaller = new UserApi();
+                    UserApi apiCaller = new UserApi();
                     String status = await apiCaller.delete(
                         userData: {'userId': sessionManager.getUser().id});
                     if (status == 'done') {

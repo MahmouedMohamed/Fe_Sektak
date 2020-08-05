@@ -51,9 +51,9 @@ class _HomeScreenState extends State<HomeScreen>
     while (true) {
 //      print(notificationCount);
       await Future.delayed(interval);
-      ApiCaller apiCaller = new NotificationApi();
+      NotificationApi apiCaller = new NotificationApi();
       notificationCount =
-      await apiCaller.get(userData: {'userId' : sessionManager.getUser().id});
+      await apiCaller.getUnReadNotificationsCount(userData: {'userId' : sessionManager.getUser().id});
       yield notificationCount;
     }
   }
