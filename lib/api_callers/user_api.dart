@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
+
 import 'api_caller.dart';
 import 'package:http/http.dart' as http;
 
@@ -64,10 +66,11 @@ class UserApi{
       body.addAll({
         'car[license]': userData['carLicenseId'].toString(),
         'car[model]': userData['carModel'],
-        'car[color]': userData['color'],
-        'car[userLicense]': userData['licenceId'].toString(),
+        'car[color]': userData['carColor'],
+        'car[userLicense]': userData['licenseId'].toString(),
       });
     }
+    print('thing $body');
     var response = await http.put(Uri.encodeFull(URL + 'user'),
         headers: {"Accpet": "application/json"}, body: body);
     print(response.body);
@@ -98,5 +101,20 @@ class UserApi{
     };
     await http.post(Uri.encodeFull(URL + 'sendNotification'),
         headers: {"Accpet": "application/json"}, body: body);
+  }
+  updateProfilePicture({userData}) async {
+    if(userData['image'] == null){
+      return 'undone';
+    }
+    String fileName = userData['image'].path.split('/').last;
+    FormData formData = new FormData.fromMap({
+      'picture': await MultipartFile.fromFile(userData['image'].path,
+          filename: fileName),
+      'userId' : userData['userId']
+    });
+    var response = await Dio().post(URL + 'updateProfilePicture',
+        data: formData);
+    var convertDataToJson = jsonDecode(response.toString());
+    return convertDataToJson['status'];
   }
 }

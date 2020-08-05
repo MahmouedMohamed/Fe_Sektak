@@ -9,6 +9,8 @@
 features : *notifications using database & stream,
 	   profile photos 
 
+we used git, flutter, laravel, pusher, google maps, 
+
     *Route::post('/register', 'UserController@register');
     *Route::get('/showNotifications', 'NotificationController@showNotifications');
     *Route::get('/getUnReadNotificationsCount', 'NotificationController@getUnReadNotificationsCount');

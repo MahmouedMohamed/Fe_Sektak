@@ -1,7 +1,10 @@
-import 'package:fe_sektak/api_callers/api_caller.dart';
+import 'dart:io';
 import 'package:fe_sektak/api_callers/user_api.dart';
+import 'package:fe_sektak/models/user.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:toast/toast.dart';
 
 import 'RegisterationScreens/login_screen.dart';
 import 'edit_profile.dart';
@@ -15,6 +18,28 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   SessionManager sessionManager = new SessionManager();
+  File image;
+  Future<File> pickImageFromGallery(ImageSource source) {
+    return ImagePicker.pickImage(source: source);
+  }
+
+  uploadImage(ImageSource source) async {
+    image = await pickImageFromGallery(source);
+    UserApi apiCaller = new UserApi();
+    String status = await apiCaller.updateProfilePicture(
+        userData: {'image': image, 'userId': sessionManager.getUser().id});
+    if ('done' == status) {
+      User user = await apiCaller
+          .getById(userData: {'userId': sessionManager.getUser().id});
+      sessionManager.logout();
+      sessionManager.createSession(user);
+      sessionManager.loadSession();
+      setState(() {});
+    } else {
+      Toast.show('Error!', context);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -45,8 +70,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: <Widget>[
                 GestureDetector(
                   child: CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(sessionManager.getUser().uPhoto),
+                    backgroundImage: NetworkImage(
+                        sessionManager.getUser().uPhoto.replaceAll('\\', '')),
                     minRadius: 40,
                     maxRadius: 60,
                     backgroundColor: Colors.white.withOpacity(0.5),
@@ -120,17 +145,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ? TextSpan(
                                         text:
                                             'Only ${sessionManager.getUser().numberOfServices} Services?\nWe are waiting more from you!',
-                                        style:
-                                            TextStyle(color: Colors.redAccent[700]))
+                                        style: TextStyle(
+                                            color: Colors.redAccent[700]))
                                     : TextSpan(
-                                        text:
-                                            'What a society Lover!',
+                                        text: 'What a society Lover!',
                                         style:
                                             TextStyle(color: Colors.green[800]))
                               ])
                         ]),
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 18,),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
                       ),
                     ],
                   ),
@@ -158,7 +185,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text.rich(
                         TextSpan(text: 'Car Model: ', children: [
                           TextSpan(
-                              text: sessionManager.getUser().car==null? 'N/A' : '${sessionManager.getUser().car.carModel}',
+                              text: sessionManager.getUser().car == null
+                                  ? 'N/A'
+                                  : '${sessionManager.getUser().car.carModel}',
                               style: TextStyle(color: Colors.blue[800]))
                         ]),
                         style: TextStyle(color: Colors.white, fontSize: 18),
@@ -166,7 +195,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text.rich(
                         TextSpan(text: 'Car Color: ', children: [
                           TextSpan(
-                              text: sessionManager.getUser().car==null? 'N/A' : '${sessionManager.getUser().car.color}',
+                              text: sessionManager.getUser().car == null
+                                  ? 'N/A'
+                                  : '${sessionManager.getUser().car.color}',
                               style: TextStyle(color: Colors.blue[800]))
                         ]),
                         style: TextStyle(color: Colors.white, fontSize: 18),
@@ -174,7 +205,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text.rich(
                         TextSpan(text: 'Car License ID: ', children: [
                           TextSpan(
-                              text: sessionManager.getUser().car==null? 'N/A' : '${sessionManager.getUser().car.carLicenseId}',
+                              text: sessionManager.getUser().car == null
+                                  ? 'N/A'
+                                  : '${sessionManager.getUser().car.carLicenseId}',
                               style: TextStyle(color: Colors.blue[800]))
                         ]),
                         style: TextStyle(color: Colors.white, fontSize: 18),
@@ -182,7 +215,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text.rich(
                         TextSpan(text: 'License ID: ', children: [
                           TextSpan(
-                              text: sessionManager.getUser().car==null? 'N/A' : '${sessionManager.getUser().car.licenseId}',
+                              text: sessionManager.getUser().car == null
+                                  ? 'N/A'
+                                  : '${sessionManager.getUser().car.licenseId}',
                               style: TextStyle(color: Colors.blue[800]))
                         ]),
                         style: TextStyle(color: Colors.white, fontSize: 18),
@@ -268,10 +303,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ButtonTheme(
                 minWidth: MediaQuery.of(context).size.width / 2,
                 buttonColor: Colors.transparent,
-//                shape: Border(bottom: BorderSide(width: 1)),
                 child: RaisedButton(
                   elevation: 0.0,
-                  onPressed: () {},
+                  onPressed: () async {
+                    await uploadImage(ImageSource.gallery);
+                  },
                   child: Text('Change profile picture'),
                 ),
               ),
