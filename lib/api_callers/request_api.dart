@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'api_caller.dart';
 import 'package:http/http.dart' as http;
 
-class RequestApi{
+class RequestApi {
   create({userData, requestData}) async {
     var body = {
       'meetPointLatitude': requestData['meetPointLatitude'].toString(),
@@ -13,7 +13,6 @@ class RequestApi{
       'time': requestData['time'].hour.toString() +
           ':' +
           requestData['time'].minute.toString(),
-      'response': 0.toString(),
       'userId': userData['userId']
     };
     var response = await http.post(Uri.encodeFull(URL + 'request'),
@@ -31,7 +30,7 @@ class RequestApi{
       'requestId': requestData['requestId'].toString(),
     };
     var response = await http.put(Uri.encodeFull(URL + 'rejectRequest'),
-        headers: {"Accpet": "application/json"},body: body);
+        headers: {"Accpet": "application/json"}, body: body);
     if (response.statusCode != 200) {
       return null;
     } else {
@@ -41,7 +40,8 @@ class RequestApi{
   }
 
   delete({requestData}) async {
-    var response = await http.delete(Uri.encodeFull(URL + 'request?requestId=${requestData['requestId']}'),
+    var response = await http.delete(
+        Uri.encodeFull(URL + 'request?requestId=${requestData['requestId']}'),
         headers: {"Accpet": "application/json"});
     if (response.statusCode != 200) {
       return null;
@@ -64,31 +64,52 @@ class RequestApi{
   }
 
   acceptRequest({rideData, requestData}) async {
-      var body = {
-        'requestId': requestData['requestId'],
-        'rideId': rideData['rideId'],
-      };
-      var response = await http.put(Uri.encodeFull(URL + 'acceptRequest'),
-          headers: {"Accpet": "application/json"}, body: body);
-      if (response.statusCode != 200) {
-        return null;
-      } else {
-        return 'done';
-      }
+    var body = {
+      'requestId': requestData['requestId'],
+      'rideId': rideData['rideId'],
+    };
+    var response = await http.put(Uri.encodeFull(URL + 'acceptRequest'),
+        headers: {"Accpet": "application/json"}, body: body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      return 'done';
+    }
   }
 
   sendRequest({rideData, requestData}) async {
-      var body = {
-        'requestId': requestData['requestId'],
-        'rideId': rideData['rideId'],
-      };
-      var response = await http.put(Uri.encodeFull(URL + 'sendRequest'),
-          headers: {"Accpet": "application/json"}, body: body);
-      print(response.body);
-      if (response.statusCode != 200) {
-        return null;
-      } else {
-        return 'done';
-      }
+    var body = {
+      'requestId': requestData['requestId'],
+      'rideId': rideData['rideId'],
+    };
+    var response = await http.put(Uri.encodeFull(URL + 'sendRequest'),
+        headers: {"Accpet": "application/json"}, body: body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      return 'done';
     }
+  }
+
+  update({requestData}) async {
+    var body = {
+      'requestId': requestData['requestId'].toString(),
+      'meetPointLatitude': requestData['meetPointLatitude'].toString(),
+      'meetPointLongitude': requestData['meetPointLongitude'].toString(),
+      'endPointLatitude': requestData['endPointLatitude'].toString(),
+      'endPointLongitude': requestData['endPointLongitude'].toString(),
+      'numberOfNeededSeats': requestData['numberOfNeededSeats'].toString(),
+      'time': requestData['time'].hour.toString() +
+          ':' +
+          requestData['time'].minute.toString(),
+    };
+    var response = await http.put(Uri.encodeFull(URL + 'request'),
+        headers: {"Accpet": "application/json"}, body: body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      var convertDataToJson = jsonDecode(response.body);
+      return convertDataToJson['status'];
+    }
+  }
 }

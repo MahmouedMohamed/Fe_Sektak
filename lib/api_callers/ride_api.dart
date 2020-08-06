@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:fe_sektak/models/meet_point.dart';
 import 'package:fe_sektak/models/request.dart';
 import 'package:fe_sektak/models/ride.dart';
 import 'package:fe_sektak/models/user.dart';
@@ -72,28 +71,51 @@ class RideApi {
     var response = await http.get(
         Uri.encodeFull(URL + 'allRides?userId=${userData['userId']}'),
         headers: {"Accpet": "application/json"});
-    if (response.statusCode != 200){
+    if (response.statusCode != 200) {
       return null;
     }
     var convertDataToJson = jsonDecode(response.body);
-    List<Ride> returnedRides = modelCreator.getRidesFromJson(convertDataToJson['rides']);
-      for(int index = 0; index<returnedRides.length;index++){
-        if (convertDataToJson['rides'][index]['requests'] != null) {
-          List<Request> requests = modelCreator.getRequestsFromJson(convertDataToJson['rides'][index]['requests']);
-          for(int requestIndex = 0; requestIndex<requests.length;requestIndex++){
-            User user = await UserApi().getById(userData: {
-              'userId': requests[requestIndex].passenger.id.toString()
-            });
-            requests[requestIndex].passenger = user;
-          }
-          returnedRides[index].requests  = requests;
+    List<Ride> returnedRides =
+        modelCreator.getRidesFromJson(convertDataToJson['rides']);
+    for (int index = 0; index < returnedRides.length; index++) {
+      if (convertDataToJson['rides'][index]['requests'] != null) {
+        List<Request> requests = modelCreator
+            .getRequestsFromJson(convertDataToJson['rides'][index]['requests']);
+        for (int requestIndex = 0;
+            requestIndex < requests.length;
+            requestIndex++) {
+          User user = await UserApi().getById(userData: {
+            'userId': requests[requestIndex].passenger.id.toString()
+          });
+          requests[requestIndex].passenger = user;
+        }
+        returnedRides[index].requests = requests;
       }
     }
     return returnedRides;
   }
 
-  update({userData, rideData, requestData}) {
-    // TODO: implement update
-    throw UnimplementedError();
+  update({userData, rideData, requestData}) async {
+    var body = {
+      'rideId': rideData['rideId'],
+      'userId': userData['userId'],
+      'startPointLatitude': rideData['startPointLatitude'].toString(),
+      'startPointLongitude': rideData['startPointLongitude'].toString(),
+      'endPointLatitude': rideData['endPointLatitude'].toString(),
+      'endPointLongitude': rideData['endPointLongitude'].toString(),
+      'availableSeats': rideData['availableSeats'].toString(),
+      'time': rideData['time'].hour.toString() +
+          ':' +
+          rideData['time'].minute.toString(),
+      'available': rideData['available'] ? 1.toString() : 0.toString(),
+    };
+    var response = await http.put(Uri.encodeFull(URL + 'ride'),
+        headers: {"Accpet": "application/json"}, body: body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      var convertDataToJson = jsonDecode(response.body);
+      return convertDataToJson['status'];
+    }
   }
 }
