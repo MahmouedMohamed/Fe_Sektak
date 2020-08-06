@@ -6,13 +6,18 @@ import 'package:fe_sektak/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import '../main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   static const String id = 'Login_Screen';
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
   UserApi apiCaller = new UserApi();
   SessionManager sessionManager = new SessionManager();
+  String error='';
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -52,13 +57,14 @@ class LoginScreen extends StatelessWidget {
                   padding: EdgeInsets.only(left: 10, right: 10, top: 20),
                   child: Column(
                     children: [
-                      textField('Email', Colors.green, false, null, email,
-                          Icons.person, ''),
+                      textField('Email', Colors.green, false, null, email,null,
+                          Icons.person,  ''),
                       SizedBox(
                         height: 10,
                       ),
-                      textField('Password', Colors.green, true, null, password,
+                      textField('Password', Colors.green, true, null, password,null,
                           Icons.lock, ''),
+                      Text('$error',style: TextStyle(color: Colors.red)),
                       SizedBox(
                         height: 30,
                       ),
@@ -86,6 +92,11 @@ class LoginScreen extends StatelessWidget {
                                     sessionManager.createSession(user);
                                     Navigator.popAndPushNamed(
                                         context, MainPage.id);
+                                  }
+                                  else{
+                                    setState(() {
+                                      error = 'Your info seems not alright! 😕';
+                                    });
                                   }
                                 },
                               ),

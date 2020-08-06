@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Widget textField(String labelText, Color selectedColor, bool status,
-    TextInputType type, TextEditingController controller,
+    TextInputType type, TextEditingController controller,error,
     [IconData selectedIcon, String hint]) {
   return Padding(
     padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
@@ -10,6 +10,10 @@ Widget textField(String labelText, Color selectedColor, bool status,
       style: GoogleFonts.delius(color: selectedColor),
       controller: controller,
       decoration: InputDecoration(
+        errorText: error,
+        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(30)),borderSide: BorderSide(color: Colors.red)),
+        errorStyle: TextStyle(color: Colors.red[100]),
+        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(30)),borderSide: BorderSide(color: Colors.red)),
         hintText: hint,
         labelText: labelText,
         labelStyle: GoogleFonts.delius(color: selectedColor),

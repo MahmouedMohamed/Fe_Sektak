@@ -14,25 +14,22 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   SessionManager sessionManager = new SessionManager();
-  TextEditingController name = new TextEditingController();
-  TextEditingController phoneNumber = new TextEditingController();
-  TextEditingController carModel = new TextEditingController();
-  TextEditingController carColor = new TextEditingController();
-  TextEditingController carLicenseId = new TextEditingController();
-  TextEditingController licenseId = new TextEditingController();
-  TextEditingController password = new TextEditingController();
-
+  List<TextEditingController> controllers = new List<TextEditingController>();
+  List<String> errors = new List<String>();
   @override
   void initState() {
     super.initState();
-    name.text = sessionManager.getUser().name;
-    phoneNumber.text = sessionManager.getUser().phoneNumber;
+    List.generate(7, (index) => errors.add(null));
+    List.generate(7, (index) => controllers.add(new TextEditingController()));
+    controllers[0].text = sessionManager.getUser().name;
+    controllers[1].text = sessionManager.getUser().phoneNumber;
     if (sessionManager.getUser().car != null) {
-      carModel.text = sessionManager.getUser().car.carModel;
-      carColor.text = sessionManager.getUser().car.color;
-      carLicenseId.text = sessionManager.getUser().car.carLicenseId;
-      licenseId.text = sessionManager.getUser().car.licenseId;
+      controllers[2].text = sessionManager.getUser().car.carModel;
+      controllers[3].text = sessionManager.getUser().car.color;
+      controllers[4].text = sessionManager.getUser().car.carLicenseId;
+      controllers[5].text = sessionManager.getUser().car.licenseId;
     }
+    controllers[6] = new TextEditingController();
   }
 
   @override
@@ -57,35 +54,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
           ),
           body: Container(
+            decoration: BoxDecoration(color: Colors.grey[800]),
+            height: double.infinity,
+            padding: EdgeInsets.only(top: 10, bottom: 10),
             child: SingleChildScrollView(
-              padding: EdgeInsets.only(top: 10, bottom: 10),
               child: Column(
                 children: <Widget>[
-                  textField('Name', Colors.grey, false, null, name),
-                  textField(
-                      'Phone Number', Colors.grey, false, null, phoneNumber),
-                  textField('Car Model', Colors.grey, false, null, carModel),
-                  textField(
-                      'Car License ID', Colors.grey, false, null, carLicenseId),
-                  textField('Car Color', Colors.grey, false, null, carColor),
-                  textField('Lincese ID', Colors.grey, false, null, licenseId),
-                  textField('Password', Colors.grey, true, null, password, null,
-                      'Enter Your Password if No change'),
+                  textField('Name', Colors.white, false, null, controllers[0],
+                      errors[0]),
+                  textField('Phone Number', Colors.white, false, null,
+                      controllers[1], errors[1]),
+                  textField('Car Model', Colors.white, false, null,
+                      controllers[2], errors[2]),
+                  textField('Car License ID', Colors.white, false, null,
+                      controllers[4], errors[4]),
+                  textField('Car Color', Colors.white, false, null,
+                      controllers[3], errors[3]),
+                  textField('Lincese ID', Colors.white, false, null,
+                      controllers[5], errors[5]),
+                  textField('Password', Colors.white, true, null, controllers[6],
+                      errors[6], null, 'Enter Your Password if No change'),
                   RaisedButton.icon(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     color: Colors.blueAccent,
                     onPressed: () async {
                       UserApi apiCaller = new UserApi();
-                      String status = await apiCaller.update(userData: {
+                      dynamic status = await apiCaller.update(userData: {
                         'userId': sessionManager.getUser().id,
-                        'name': name.text,
-                        'password': password.text,
-                        'phoneNumber': phoneNumber.text,
-                        'carModel': carModel.text,
-                        'carColor': carColor.text,
-                        'licenseId': licenseId.text,
-                        'carLicenseId': carLicenseId.text,
+                        'name': controllers[0].text,
+                        'password': controllers[6].text,
+                        'phoneNumber': controllers[1].text,
+                        'carModel': controllers[2].text,
+                        'carColor': controllers[3].text,
+                        'licenseId': controllers[5].text,
+                        'carLicenseId': controllers[4].text,
                       });
                       if (status == 'done') {
                         User user = await apiCaller.getById(
@@ -96,6 +99,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           sessionManager.loadSession();
                           Navigator.popAndPushNamed(context, MainPage.id);
                         }
+                      } else {
+                        setState(() {
+                          for (int index = 0; index < errors.length; index++)
+                            errors[index] = status[index];
+                        });
                       }
                     },
                     icon: Icon(

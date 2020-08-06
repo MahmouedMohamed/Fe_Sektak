@@ -13,7 +13,7 @@ class UserApi {
       'phoneNumber': userData['phoneNumber'].toString(),
       'nationalId': userData['nationalId'].toString(),
     };
-    if (carData['carLicenseId'] != '') {
+    if (carData['carLicenseId'] != '' || carData['licenceId'] != '') {
       body.addAll({
         'car[license]': carData['carLicenseId'].toString(),
         'car[model]': carData['carModel'],
@@ -24,7 +24,12 @@ class UserApi {
     var response = await http.post(Uri.encodeFull(URL + 'register'),
         headers: {"Accpet": "application/json"}, body: body);
     var convertDataToJson = jsonDecode(response.body);
-    return convertDataToJson['status'];
+    if('done' == convertDataToJson['status']){
+      return convertDataToJson['status'];
+    }
+    else{
+      return errorCreator.getRegisterErrorsFromJson(convertDataToJson['details']);
+    }
   }
 
   delete({userData}) async {
@@ -44,10 +49,10 @@ class UserApi {
         Uri.encodeFull(URL +
             'login?email=${userData['email']}&password=${userData['password']}'),
         headers: {"Accpet": "application/json"});
-    if (response.statusCode != 200) {
+    var convertDataToJson = jsonDecode(response.body);
+    if (response.statusCode != 200 || convertDataToJson['error']!=null) {
       return null;
     } else {
-      var convertDataToJson = jsonDecode(response.body);
       return modelCreator.getUserFromJson(convertDataToJson['user']);
     }
   }
@@ -69,10 +74,12 @@ class UserApi {
     }
     var response = await http.put(Uri.encodeFull(URL + 'user'),
         headers: {"Accpet": "application/json"}, body: body);
-    if (response.statusCode != 200) {
-      return null;
-    } else {
-      return 'done';
+    var convertDataToJson = jsonDecode(response.body);
+    if('done' == convertDataToJson['status']){
+      return convertDataToJson['status'];
+    }
+    else{
+      return errorCreator.getEditProfileErrorsFromJson(convertDataToJson['details']);
     }
   }
 
