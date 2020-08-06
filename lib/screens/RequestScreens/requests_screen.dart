@@ -3,6 +3,7 @@ import 'package:fe_sektak/models/request.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 import '../main_screen.dart';
 import 'package:fe_sektak/screens/MeetingScreens/meetTime_screen.dart';
@@ -171,7 +172,26 @@ class _RequestScreenState extends State<RequestScreen> {
                                     'Start Ride!',
                                     style: TextStyle(color: Colors.white),
                                   ))
-                              : Text('No action available')
+                              : FlatButton(
+                                      color: Colors.grey,
+                                      child: Text(
+                                        'Cancel Request',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () async {
+                                        String status = await apiRequestCaller
+                                            .cancel(requestData: {
+                                          'requestId': request.requestId
+                                        }, userData: {
+                                          'userId': sessionManager.getUser().id
+                                        });
+                                        if (status == 'done') {
+                                          setState(() {});
+                                        } else {
+                                          Toast.show('Error!', context);
+                                        }
+                                      },
+                                    )
                         ])
                       : Column(
                           children: <Widget>[

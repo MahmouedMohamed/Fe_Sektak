@@ -239,8 +239,6 @@ class _RideUpdateState extends State<RideUpdateScreen>
                           'availableSeats': currentIntValue,
                           'time': selectedTime,
                           'available': available,
-                        }, userData: {
-                          'userId': sessionManager.getUser().id
                         });
                         if (status == 'done') {
                           Navigator.popAndPushNamed(context, MainPage.id);

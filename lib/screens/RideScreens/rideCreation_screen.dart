@@ -228,7 +228,6 @@ class _RideCreationState extends State<RideCreation>
                               .longitude,
                           'availableSeats': currentIntValue,
                           'time': selectedTime,
-                          'available': 1,
                         }, userData: {
                           'userId': sessionManager.getUser().id
                         });

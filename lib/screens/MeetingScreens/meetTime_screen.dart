@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pusher_websocket_flutter/pusher.dart';
+import 'package:toast/toast.dart';
 import 'package:vector_math/vector_math.dart' as math;
 import '../main_screen.dart';
 import '../review_screen.dart';
@@ -50,7 +51,9 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
     try {
       await Pusher.init("0e4e0f059789236002f4", PusherOptions(cluster: "eu"))
           .catchError((error) {});
-    } on PlatformException catch (e) {}
+    } on PlatformException catch (e) {
+      Toast.show(e.message,context);
+    }
     Pusher.connect(onConnectionStateChange: (value) {}, onError: (error) {});
     channel = await Pusher.subscribe('ride.${request.rideId}');
     getDriverLocation();
