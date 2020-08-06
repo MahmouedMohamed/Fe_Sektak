@@ -112,4 +112,18 @@ class RequestApi {
       return convertDataToJson['status'];
     }
   }
+  cancel({requestData,userData}) async {
+    var body = {
+      'userId' : userData['userId'].toString(),
+      'requestId': requestData['requestId'].toString(),
+    };
+    var response = await http.put(Uri.encodeFull(URL + 'cancelRequest'),
+        headers: {"Accpet": "application/json"}, body: body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      var convertDataToJson = jsonDecode(response.body);
+      return convertDataToJson['status'];
+    }
+  }
 }
