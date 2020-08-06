@@ -19,7 +19,6 @@ class RideApi {
       'time': rideData['time'].hour.toString() +
           ':' +
           rideData['time'].minute.toString(),
-      'available': rideData['available'].toString(),
     };
     var response = await http.post(Uri.encodeFull(URL + 'ride'),
         headers: {"Accpet": "application/json"}, body: body);
@@ -48,9 +47,9 @@ class RideApi {
     return TimeOfDay(hour: int.parse(array[0]), minute: int.parse(array[1]));
   }
 
-  get({userData, requestData}) async {
+  getAvailableRides({userData, requestData}) async {
     var response = await http.get(
-        Uri.encodeFull(URL + 'availableRides?id=${requestData['requestId']}'),
+        Uri.encodeFull(URL + 'availableRides?requestId=${requestData['requestId']}'),
         headers: {"Accpet": "application/json"});
     if (response.statusCode != 200) {
       return null;
@@ -63,7 +62,7 @@ class RideApi {
             .getById(userData: {'userId': returnedRides[index].driver.id});
         returnedRides[index].driver = user;
       }
-      return returnedRides;
+      return [returnedRides,convertDataToJson['price'].toString()];
     }
   }
 
@@ -98,7 +97,6 @@ class RideApi {
   update({userData, rideData, requestData}) async {
     var body = {
       'rideId': rideData['rideId'],
-      'userId': userData['userId'],
       'startPointLatitude': rideData['startPointLatitude'].toString(),
       'startPointLongitude': rideData['startPointLongitude'].toString(),
       'endPointLatitude': rideData['endPointLatitude'].toString(),
@@ -110,6 +108,19 @@ class RideApi {
       'available': rideData['available'] ? 1.toString() : 0.toString(),
     };
     var response = await http.put(Uri.encodeFull(URL + 'ride'),
+        headers: {"Accpet": "application/json"}, body: body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      var convertDataToJson = jsonDecode(response.body);
+      return convertDataToJson['status'];
+    }
+  }
+  cancel({userData, rideData, requestData}) async {
+    var body = {
+      'rideId': rideData['rideId'],
+    };
+    var response = await http.put(Uri.encodeFull(URL + 'cancelRide'),
         headers: {"Accpet": "application/json"}, body: body);
     if (response.statusCode != 200) {
       return null;

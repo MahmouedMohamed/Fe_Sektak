@@ -193,7 +193,7 @@ class _RideScreenState extends State<RideScreen> {
                         ),
                         onPressed: () async {
                           String status = await apiRideCaller
-                              .delete(rideData: {'rideId': ride.rideId});
+                              .cancel(rideData: {'rideId': ride.rideId});
                           if (status == 'done') {
                             setState(() {});
                           } else {
@@ -267,11 +267,35 @@ class _RideScreenState extends State<RideScreen> {
                           Text(
                               'Needed seats: ${ride.requests[index].numberOfNeededSeats}'),
                           ride.requests[index].response == true
-                              ? Text(
-                                  'Accepted',
-                                  style: TextStyle(color: Colors.green),
-                                )
-                              : Row(
+                              ? Column(
+                            children: <Widget>[
+                              Text(
+                                'Accepted',
+                                style: TextStyle(color: Colors.green),
+                              ),
+                              !compare(ride.rideTime, TimeOfDay.now())?
+                              FlatButton(
+                                color: Colors.grey,
+                                child: Text(
+                                  'Cancel Request',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed: () async {
+                                  String status = await apiRequestCaller
+                                      .cancel(requestData: {
+                                    'requestId':
+                                    ride.requests[index].requestId
+                                  },userData: {'userId' : sessionManager.getUser().id});
+                                  if (status == 'done') {
+                                    setState(() {});
+                                  } else {
+                                    Toast.show('Error!', context);
+                                  }
+                                },
+                              ):
+                              SizedBox(),
+                            ],
+                          ) : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     FlatButton(
