@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:fe_sektak/api_callers/api_caller.dart';
-import 'package:fe_sektak/api_callers/notification_api.dart';
 import 'package:fe_sektak/api_callers/ride_api.dart';
 import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/models/ride.dart';
@@ -11,7 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vector_math/vector_math.dart' as math;
-
 import '../main_screen.dart';
 import '../review_screen.dart';
 
@@ -67,16 +64,22 @@ class _RideTimeScreenState extends State<RideTimeScreen> {
                 request.meetPoint.meetingTime.minute.toString()),
       ));
     });
-    markers.add(new Marker(
-        markerId: new MarkerId('Start Point'),
-        position: new LatLng(ride.startPointLatitude, ride.startPointLongitude),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        infoWindow: InfoWindow(title: 'Start Point')));
-    markers.add(new Marker(
-        markerId: new MarkerId('End Point'),
-        position: new LatLng(ride.endPointLatitude, ride.endPointLongitude),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        infoWindow: InfoWindow(title: 'End Point')));
+    for (int index = 0; index < 2; index++) {
+      markers.add(new Marker(
+          markerId: index == 0
+              ? new MarkerId('Start Point')
+              : new MarkerId('End Point'),
+          position: index == 0
+              ? new LatLng(ride.startPointLatitude, ride.startPointLongitude)
+              : new LatLng(ride.endPointLatitude, ride.endPointLongitude),
+          icon: index == 0
+              ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed)
+              : BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueGreen),
+          infoWindow: index == 0
+              ? InfoWindow(title: 'Start Point')
+              : InfoWindow(title: 'End Point')));
+    }
   }
 
   double calculateDistance(LatLng startPoint, LatLng endPoint) {
@@ -102,7 +105,7 @@ class _RideTimeScreenState extends State<RideTimeScreen> {
     while (calculateDistance(userLocation.getLatLng(),
                 markers.elementAt(markers.length - 1).position) *
             1000 >
-        30) {
+        20) {
       await userLocation.getUserLocation();
     }
     return AlertDialog(
@@ -136,8 +139,6 @@ class _RideTimeScreenState extends State<RideTimeScreen> {
             })
       ],
     );
-
-    ///delete marker
   }
 
   deleteRide() async {
@@ -151,7 +152,6 @@ class _RideTimeScreenState extends State<RideTimeScreen> {
       builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data != null) {
-//          print('thing hh');
           return snapshot.data;
         } else if (snapshot.error != null) {
           return Container(

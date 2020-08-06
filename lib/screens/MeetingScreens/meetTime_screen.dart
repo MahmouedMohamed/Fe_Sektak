@@ -1,20 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/request_api.dart';
 import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/models/request.dart';
 import 'package:fe_sektak/models/user.dart';
 import 'package:fe_sektak/models/user_location.dart';
 import 'package:fe_sektak/session/session_manager.dart';
+import 'package:fe_sektak/widgets/marker_options.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pusher_websocket_flutter/pusher.dart';
 import 'package:vector_math/vector_math.dart' as math;
-
 import '../main_screen.dart';
 import '../review_screen.dart';
 
@@ -50,17 +49,9 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
   Future<void> initPusher() async {
     try {
       await Pusher.init("0e4e0f059789236002f4", PusherOptions(cluster: "eu"))
-          .catchError((error) {
-        print('thing $error');
-      });
-    } on PlatformException catch (e) {
-      print(e.message);
-    }
-    Pusher.connect(onConnectionStateChange: (value) {
-      print('thing ${value.currentState}');
-    }, onError: (error) {
-      print('thing $error');
-    });
+          .catchError((error) {});
+    } on PlatformException catch (e) {}
+    Pusher.connect(onConnectionStateChange: (value) {}, onError: (error) {});
     channel = await Pusher.subscribe('ride.${request.rideId}');
     getDriverLocation();
   }
@@ -80,11 +71,13 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
     });
   }
 
-  initMarker() {
+  initMarker() async {
+    MarkerIcon icon = new MarkerIcon();
+    await icon.createMarkerImageFromAsset();
     markers.add(new Marker(
-        markerId: new MarkerId('Diver'),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-        infoWindow: InfoWindow(title: 'Diver')));
+        markerId: new MarkerId('Driver'),
+        icon: icon.getIcon(),
+        infoWindow: InfoWindow(title: 'Driver')));
   }
 
   double calculateDistance(LatLng startPoint, LatLng endPoint) {
@@ -101,19 +94,16 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
   }
 
   Future<Widget> waitingForDriver() async {
-    print('thing im waiting for driver');
     if (userLocation.getLatLng() == null) {
       await userLocation.getUserLocation();
     }
     while (calculateDistance(userLocation.getLatLng(),
                 markers.elementAt(markers.length - 1).position) *
             1000 >
-        10) {
-      print(
-          'thing ${calculateDistance(userLocation.getLatLng(), markers.elementAt(markers.length - 1).position) * 1000}');
+        20) {
+      Future.delayed(Duration(seconds: 5));
       await userLocation.getUserLocation();
     }
-    print('thing near');
     UserApi apiCaller = new UserApi();
     User user = await apiCaller.getById(userData: {'userId': userId});
     Pusher.unsubscribe('ride.${request.rideId}');
@@ -123,7 +113,7 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
           'it seems that you are ${num.parse((calculateDistance(userLocation.getLatLng(), markers.elementAt(markers.length - 1).position) * 1000).toStringAsFixed(2))} Meter away from the Driver.\n'
           'Car Model : ${user.car.carModel} \n'
           'Car Color : ${user.car.color} \n'
-          'Car License : ${user.car.carLicenseId}'
+          'Car License : ${user.car.carLicenseId}\n'
           'Phone Number : ${user.phoneNumber}'),
       actions: [
         FlatButton(
@@ -159,7 +149,6 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
   }
 
   Future<Widget> rideDone() async {
-    print('thing im in ride');
     if (userLocation.getLatLng() == null) {
       await userLocation.getUserLocation();
     }
@@ -168,7 +157,6 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
             1000 >
         10) {
       await userLocation.getUserLocation();
-//    Future.delayed(Duration(seconds: 5));
     }
     return AlertDialog(
       title: Text("Thanks for using our App"),
@@ -199,7 +187,6 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
   }
 
   getAcquiringWidget() {
-    print('thing $inRide');
     return FutureBuilder<Widget>(
       future: inRide ? rideDone() : waitingForDriver(),
       builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {

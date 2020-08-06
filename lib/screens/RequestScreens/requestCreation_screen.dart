@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/request_api.dart';
 import 'package:fe_sektak/models/user_location.dart';
 import 'package:fe_sektak/session/session_manager.dart';
@@ -18,18 +16,25 @@ class RequestCreation extends StatefulWidget {
   _RequestCreationState createState() => _RequestCreationState();
 }
 
-class _RequestCreationState extends State<RequestCreation> {
+class _RequestCreationState extends State<RequestCreation>
+    with SingleTickerProviderStateMixin {
   GoogleMap googleMap;
   UserLocation userLocation;
-  Set<Marker> markers=new Set();
+  Set<Marker> markers = new Set();
   NumberPicker integerNumberPicker;
   int currentIntValue = 1;
   bool isLoaded = false;
   TimeOfDay selectedTime;
   SessionManager sessionManager = new SessionManager();
+  AnimationController controller;
   @override
   void initState() {
     super.initState();
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 4),
+      reverseDuration: Duration(seconds: 4),
+    );
     userLocation = new UserLocation();
     selectedTime = TimeOfDay.now();
     initializeNumberPickers();
@@ -76,30 +81,38 @@ class _RequestCreationState extends State<RequestCreation> {
 
   @override
   Widget build(BuildContext context) {
+    controller.repeat();
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          leading: BackButton(),
+          backgroundColor: Colors.black,
+          leading: BackButton(
+            onPressed: () => Navigator.popAndPushNamed(context, MainPage.id),
+          ),
           title: Text('Ride Creation'),
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(top: 10, right: 10),
+                child: GestureDetector(
+                    onTap: onButtonPressed,
+                    child: AnimatedIcon(
+                      icon: AnimatedIcons.event_add,
+                      progress: controller,
+                      size: 40,
+                      color: Colors.green,
+                    )))
+          ],
         ),
         body: Stack(
           children: <Widget>[
             Container(
               child: showGoogleMap(),
             ),
-            Align(
-                alignment: Alignment.bottomRight,
-                child: RaisedButton(
-                  child: Text('Begin Creation'),
-                  onPressed: () {
-                    isLoaded ? _onButtonPressed() : null;
-                  },
-                ))
           ],
         ));
   }
 
-  void _onButtonPressed() {
+  void onButtonPressed() {
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,
@@ -107,7 +120,7 @@ class _RequestCreationState extends State<RequestCreation> {
         builder: (context) {
           return Container(
             decoration: BoxDecoration(
-              color: Colors.amber,
+              color: Colors.black.withOpacity(0.5),
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30), topRight: Radius.circular(30)),
             ),
@@ -115,13 +128,16 @@ class _RequestCreationState extends State<RequestCreation> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Declare Your Points of The Ride'),
+                  Text(
+                    'Declare Your Points of The Ride',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Text(
                     'Blue for Meet Point',
                     style: TextStyle(color: Colors.blue),
                   ),
                   Text(
-                    'Green for Start Point',
+                    'Green for End Point',
                     style: TextStyle(color: Colors.green),
                   ),
                   RaisedButton.icon(
@@ -129,9 +145,9 @@ class _RequestCreationState extends State<RequestCreation> {
                         borderRadius: BorderRadius.all(Radius.circular(30))),
                     icon: Icon(
                       Icons.flag,
-                      color: Colors.amber,
+                      color: Colors.white,
                     ),
-                    color: Colors.black,
+                    color: Colors.amber,
                     label: Text(
                       'Press Here To Show Markers',
                       style: TextStyle(color: Colors.white),
@@ -142,14 +158,16 @@ class _RequestCreationState extends State<RequestCreation> {
                     },
                   ),
                   RaisedButton.icon(
-                    color: Colors.black,
+                    color: Colors.amber,
                     label: Text(
                       'Select Time Of meeting',
                       style: TextStyle(color: Colors.white),
                     ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
                     icon: Icon(
                       Icons.timer,
-                      color: Colors.amber,
+                      color: Colors.white,
                     ),
                     onPressed: () async {
                       TimeOfDay t = await showTimePicker(
@@ -157,15 +175,16 @@ class _RequestCreationState extends State<RequestCreation> {
                       if (t != null)
                         setState(() {
                           selectedTime = t;
-                          print('Modifying Time $selectedTime');
                         });
                     },
                   ),
                   RaisedButton.icon(
-                    color: Colors.black,
+                    color: Colors.amber,
                     onPressed: () => showIntDialog(),
                     icon: Icon(Icons.airline_seat_recline_normal,
-                        color: Colors.amber),
+                        color: Colors.white),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
                     label: new Text(
                       "Select Number Of Seats you need",
                       style: TextStyle(color: Colors.white),
@@ -174,10 +193,12 @@ class _RequestCreationState extends State<RequestCreation> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: RaisedButton.icon(
-                      color: Colors.black,
+                      color: Colors.green,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
                       icon: Icon(
                         Icons.arrow_forward,
-                        color: Colors.amber,
+                        color: Colors.white,
                       ),
                       label: Text(
                         'Create Request',
@@ -186,22 +207,32 @@ class _RequestCreationState extends State<RequestCreation> {
                       onPressed: () async {
                         RequestApi apiCaller = new RequestApi();
                         int startIndex = 0;
-                        if(markers.elementAt(0).markerId.value!='MeetPoint'){
-                          startIndex =1;
+                        if (markers.elementAt(0).markerId.value !=
+                            'MeetPoint') {
+                          startIndex = 1;
                         }
-                        String status = await apiCaller.create(
-                          requestData: {
-                          'meetPointLatitude': markers.elementAt(startIndex).position.latitude,
-                          'meetPointLongitude' :markers.elementAt(startIndex).position.longitude,
-                          'endPointLatitude' : markers.elementAt(1-startIndex).position.latitude,
-                          'endPointLongitude' : markers.elementAt(1-startIndex).position.longitude,
-                          'numberOfNeededSeats' : currentIntValue,
-                          'time' : selectedTime,
-                          'response' : false
-                        },userData: {'userId' : sessionManager.getUser().id});
-                        if(status=='done'){
+                        String status = await apiCaller.create(requestData: {
+                          'meetPointLatitude':
+                              markers.elementAt(startIndex).position.latitude,
+                          'meetPointLongitude':
+                              markers.elementAt(startIndex).position.longitude,
+                          'endPointLatitude': markers
+                              .elementAt(1 - startIndex)
+                              .position
+                              .latitude,
+                          'endPointLongitude': markers
+                              .elementAt(1 - startIndex)
+                              .position
+                              .longitude,
+                          'numberOfNeededSeats': currentIntValue,
+                          'time': selectedTime,
+                          'response': false
+                        }, userData: {
+                          'userId': sessionManager.getUser().id
+                        });
+                        if (status == 'done') {
                           Navigator.popAndPushNamed(context, MainPage.id);
-                        }else{
+                        } else {
                           Toast.show('Please Enter valid data', context);
                         }
                       },
@@ -239,7 +270,6 @@ class _RequestCreationState extends State<RequestCreation> {
       },
     ).then((num value) {
       if (value != null) {
-        print('Modifying Number $value');
         setState(() => currentIntValue = value);
         integerNumberPicker.animateInt(value);
       }
@@ -255,38 +285,34 @@ class _RequestCreationState extends State<RequestCreation> {
     for (int i = 0; i < 2; i++) {
       MarkerId markerId;
       Marker marker;
-      markerId =
-          MarkerId(i == 0 ? 'MeetPoint' : 'Destination');
+      markerId = MarkerId(i == 0 ? 'MeetPoint' : 'Destination');
       marker = Marker(
           markerId: markerId,
           position: LatLng(
             userLocation.getLatLng().latitude,
             userLocation.getLatLng().longitude,
           ),
-          infoWindow: InfoWindow(
-              title: i == 0 ? 'MeetPoint' : 'Destination'),
+          infoWindow: InfoWindow(title: i == 0 ? 'MeetPoint' : 'Destination'),
           draggable: true,
           onDragEnd: (LatLng position) {
-            _onMarkerDragEnd(markerId, position);
+            onMarkerDragEnd(markerId, position);
           },
           icon: i == 0
-              ? BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueGreen)
-                  : BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueBlue));
+              ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue)
+              : BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueGreen));
       setState(() {
         markers.add(marker);
       });
     }
   }
 
-  void _onMarkerDragEnd(MarkerId markerId, LatLng newPosition) async {
+  void onMarkerDragEnd(MarkerId markerId, LatLng newPosition) async {
     for (int index = 0; index < markers.length; index++) {
       if (markers.elementAt(index).markerId == markerId) {
         setState(() {
-          markers.add(markers.elementAt(index).copyWith(
-              positionParam: newPosition
-          ));
+          markers.add(
+              markers.elementAt(index).copyWith(positionParam: newPosition));
           markers.remove(markers.elementAt(index));
         });
         break;

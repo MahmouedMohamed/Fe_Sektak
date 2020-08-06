@@ -1,14 +1,14 @@
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/models/user.dart';
 import 'package:fe_sektak/screens/RegisterationScreens/signup_screen.dart';
 import 'package:fe_sektak/session/session_manager.dart';
+import 'package:fe_sektak/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import '../main_screen.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatelessWidget {
-  static const String id ='Login_Screen';
+  static const String id = 'Login_Screen';
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
   UserApi apiCaller = new UserApi();
@@ -23,15 +23,14 @@ class LoginScreen extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
                 gradient: LinearGradient(
-              colors: [Colors.white, Colors.lightBlueAccent, Colors.blue],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )),
+                    colors: [Colors.white, Colors.grey],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter)),
             width: double.infinity,
             child: Column(
               children: <Widget>[
                 Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.only(top: 20),
                     child: Container(
                       height: 200,
                       width: 200,
@@ -41,100 +40,52 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 0.0, bottom: 40),
-                      child: Text(
-                        'Fe Sektak',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white30,
-                          shadows: [
-                            Shadow(color: Colors.black, offset: Offset(0, 2))
-                          ],
-                          fontSize: 30,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                Text('Fe Sektak',
+                    style: GoogleFonts.delius(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      wordSpacing: 1.5,
+                      letterSpacing: 1.5,
+                      fontSize: 40,
+                    )),
                 Container(
-                  decoration: BoxDecoration(color: Colors.transparent),
+                  padding: EdgeInsets.only(left: 10, right: 10, top: 20),
                   child: Column(
                     children: [
-                      Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                          child: TextField(
-                            controller: email,
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(25.7),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(25.7),
-                              ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              icon: Icon(
-                                Icons.person,
-                                color: Colors.pinkAccent,
-                              ),
-                              labelText: 'Email',
-                            ),
-                          )),
+                      textField('Email', Colors.green, false, null, email,
+                          Icons.person, ''),
                       SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
-                      Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                          child: TextField(
-                            controller: password,
-                            obscureText: true,
-                            textDirection: TextDirection.ltr,
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(25.7),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(25.7),
-                              ),
-                              icon: Icon(
-                                Icons.lock,
-                                color: Colors.pinkAccent,
-                              ),
-                              labelText: 'Password',
-                            ),
-                          )),
+                      textField('Password', Colors.green, true, null, password,
+                          Icons.lock, ''),
                       SizedBox(
-                        height: 20,
+                        height: 30,
                       ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ButtonTheme(
-                              minWidth: 130,
+                              minWidth: MediaQuery.of(context).size.width / 3,
                               child: RaisedButton(
-                                child: Text('Login'),
+                                child: Text(
+                                  'Login',
+                                  style: GoogleFonts.delius(fontSize: 16),
+                                ),
                                 color: Colors.greenAccent,
                                 splashColor: Colors.blue,
                                 colorBrightness: Brightness.light,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
                                 onPressed: () async {
-                                  User user = await apiCaller.login(userData : {'email' : email.text,'password' : password.text});
-                                  if(user!=null){
+                                  User user = await apiCaller.login(userData: {
+                                    'email': email.text,
+                                    'password': password.text
+                                  });
+                                  if (user != null) {
                                     sessionManager.createSession(user);
-                                    Navigator.popAndPushNamed(context, MainPage.id);
+                                    Navigator.popAndPushNamed(
+                                        context, MainPage.id);
                                   }
                                 },
                               ),
@@ -143,14 +94,10 @@ class LoginScreen extends StatelessWidget {
                               padding: EdgeInsets.only(left: 25),
                               child: Text(
                                 'Forgot password?',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  shadows: [
-                                    Shadow(
-                                        color: Colors.black,
-                                        offset: Offset(0, 1))
-                                  ],
-                                ),
+                                style: GoogleFonts.delius(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red),
                               ),
                             )
                           ]),
@@ -168,22 +115,22 @@ class LoginScreen extends StatelessWidget {
                             children: <Widget>[
                               Text(
                                 'Don\'t have Account? ',
-                                style: TextStyle(
+                                style: GoogleFonts.delius(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 12,
+                                  color: Colors.black,
+                                  fontSize: 14,
                                 ),
                               ),
                               GestureDetector(
                                 child: Text(
                                   'Join Us Now!',
-                                  style: TextStyle(
+                                  style: GoogleFonts.delius(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.greenAccent,
-                                    fontSize: 15,
+                                    fontSize: 18,
                                   ),
                                 ),
-                                onTap: (){
+                                onTap: () {
                                   Navigator.pushNamed(context, SignupScreen.id);
                                 },
                               ),

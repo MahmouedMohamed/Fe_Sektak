@@ -11,7 +11,7 @@ class NotificationApi{
   }
 
   getAll({userData}) async {
-    var response = await http.get(Uri.encodeFull(URL + 'showNotifications?userId=${userData['userId'].toString()}'),
+    var response = await http.get(Uri.encodeFull(URL + 'notifications?userId=${userData['userId'].toString()}'),
         headers: {"Accpet": "application/json"});
     var convertDataToJson = jsonDecode(response.body);
     return modelCreator.getNotificationsFromJson(convertDataToJson);

@@ -78,7 +78,7 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
                   ),
                   child: CircleAvatar(
                     radius: 60,
-                    backgroundImage: NetworkImage(ride.driver.uPhoto),
+                    backgroundImage: NetworkImage(ride.driver.uPhoto.replaceAll('\\', '')),
                   ),
                 ),
                 title: Text(

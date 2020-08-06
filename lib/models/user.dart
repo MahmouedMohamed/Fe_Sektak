@@ -33,7 +33,9 @@ class User {
       rate.toString(),
       numberOfServices.toString(),
       totalReview.toString(),
-      car==null? [null,null,null,null].toString() : car.toList().toString(),
+      car == null
+          ? [null, null, null, null].toString()
+          : car.toList().toString(),
       uPhoto
     ];
   }

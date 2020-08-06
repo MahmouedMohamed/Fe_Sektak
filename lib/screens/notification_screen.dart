@@ -1,4 +1,3 @@
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/notification_api.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/cupertino.dart';

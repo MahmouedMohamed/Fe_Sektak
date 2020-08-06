@@ -1,4 +1,3 @@
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/review_api.dart';
 import 'package:fe_sektak/models/ride.dart';
 import 'package:flutter/material.dart';

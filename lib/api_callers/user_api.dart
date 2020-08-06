@@ -4,8 +4,7 @@ import 'package:dio/dio.dart';
 import 'api_caller.dart';
 import 'package:http/http.dart' as http;
 
-class UserApi{
-
+class UserApi {
   register({userData, carData}) async {
     Map<String, dynamic> body = {
       'name': userData['name'].toString(),
@@ -45,19 +44,17 @@ class UserApi{
         Uri.encodeFull(URL +
             'login?email=${userData['email']}&password=${userData['password']}'),
         headers: {"Accpet": "application/json"});
-    print(response.statusCode);
     if (response.statusCode != 200) {
       return null;
     } else {
       var convertDataToJson = jsonDecode(response.body);
-      print('thing $convertDataToJson');
       return modelCreator.getUserFromJson(convertDataToJson['user']);
     }
   }
 
   update({userData}) async {
     var body = {
-      'user_id' : userData['userId'],
+      'user_id': userData['userId'],
       'name': userData['name'],
       'password': userData['password'],
       'phoneNumber': userData['phoneNumber'],
@@ -70,10 +67,8 @@ class UserApi{
         'car[userLicense]': userData['licenseId'].toString(),
       });
     }
-    print('thing $body');
     var response = await http.put(Uri.encodeFull(URL + 'user'),
         headers: {"Accpet": "application/json"}, body: body);
-    print(response.body);
     if (response.statusCode != 200) {
       return null;
     } else {
@@ -92,6 +87,7 @@ class UserApi{
       return modelCreator.getUserFromJson(convertDataToJson);
     }
   }
+
   sendUserLocation({userData, rideData}) async {
     var body = {
       'rideId': rideData['rideId'].toString(),
@@ -99,21 +95,22 @@ class UserApi{
       'locationLatitude': userData['locationLatitude'].toString(),
       'locationLongitude': userData['locationLongitude'].toString(),
     };
-    await http.post(Uri.encodeFull(URL + 'sendNotification'),
+    await http.post(Uri.encodeFull(URL + 'userLocation'),
         headers: {"Accpet": "application/json"}, body: body);
   }
+
   updateProfilePicture({userData}) async {
-    if(userData['image'] == null){
+    if (userData['image'] == null) {
       return 'undone';
     }
     String fileName = userData['image'].path.split('/').last;
     FormData formData = new FormData.fromMap({
       'picture': await MultipartFile.fromFile(userData['image'].path,
           filename: fileName),
-      'userId' : userData['userId']
+      'userId': userData['userId']
     });
-    var response = await Dio().post(URL + 'updateProfilePicture',
-        data: formData);
+    var response =
+        await Dio().post(URL + 'updateProfilePicture', data: formData);
     var convertDataToJson = jsonDecode(response.toString());
     return convertDataToJson['status'];
   }

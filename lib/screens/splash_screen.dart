@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:math';
 import 'RegisterationScreens/login_screen.dart';
 import 'main_screen.dart';
 

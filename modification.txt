@@ -1,13 +1,14 @@
-1-finish api usage
+*1-finish api usage
 *2-create meeting operation(screens, real time pusher or database,everything..)
 *3-review
 *4-notification
-5-update ride and update request
+*5-update ride and update request
 6-Clean code, update api naming
 7-ui upgrade + tests +some documention
 8-there is time? add some features..
 features : *notifications using database & stream,
 	   profile photos 
+Error Handling 
 
 we used git, flutter, laravel, pusher, google maps, 
 
@@ -30,6 +31,6 @@ we used git, flutter, laravel, pusher, google maps,
     *Route::put('/acceptRequest', 'RidesController@acceptRequest');
     *Route::post('/ride', 'RidesController@store');
     *Route::delete('/ride', 'RidesController@destroy');
-    Route::put('/ride', 'RidesController@update');
+    *Route::put('/ride', 'RidesController@update');
 
     *Route::post('/sendNotification', 'NotificationController@send');

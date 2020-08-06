@@ -1,4 +1,3 @@
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/request_api.dart';
 import 'package:fe_sektak/models/request.dart';
 import 'package:fe_sektak/session/session_manager.dart';
@@ -8,6 +7,8 @@ import 'package:flutter/material.dart';
 import '../main_screen.dart';
 import 'package:fe_sektak/screens/MeetingScreens/meetTime_screen.dart';
 import 'package:fe_sektak/screens/RideScreens/ride_selector.dart';
+
+import 'update_request.dart';
 
 class RequestScreen extends StatefulWidget {
   static const String id = 'Request_Screen';
@@ -61,7 +62,10 @@ class _RequestScreenState extends State<RequestScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text('My Requests',style: TextStyle(color: Colors.amber),),
+          title: Text(
+            'My Requests',
+            style: TextStyle(color: Colors.white),
+          ),
           leading: BackButton(
             onPressed: () {
               Navigator.popAndPushNamed(context, MainPage.id);
@@ -91,13 +95,17 @@ class _RequestScreenState extends State<RequestScreen> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          Text('Meeting point', style: TextStyle(fontSize: 26)),
+                          Text('Meeting point',
+                              style:
+                                  TextStyle(fontSize: 26, color: Colors.blue)),
                           Text(
                               '${request.meetPoint.latitude.toStringAsFixed(2)}',
-                              style: TextStyle(fontSize: 26)),
+                              style:
+                                  TextStyle(fontSize: 26, color: Colors.blue)),
                           Text(
                               '${request.meetPoint.longitude.toStringAsFixed(2)}',
-                              style: TextStyle(fontSize: 26)),
+                              style:
+                                  TextStyle(fontSize: 26, color: Colors.blue)),
                         ],
                       ),
                       SizedBox(
@@ -105,26 +113,42 @@ class _RequestScreenState extends State<RequestScreen> {
                       ),
                       Column(
                         children: <Widget>[
-                          Text('Destination', style: TextStyle(fontSize: 26)),
+                          Text('Destination',
+                              style:
+                                  TextStyle(fontSize: 26, color: Colors.green)),
                           Text('${request.endPointLatitude.toStringAsFixed(2)}',
-                              style: TextStyle(fontSize: 26)),
+                              style:
+                                  TextStyle(fontSize: 26, color: Colors.green)),
                           Text(
                               '${request.endPointLongitude.toStringAsFixed(2)}',
-                              style: TextStyle(fontSize: 26)),
+                              style:
+                                  TextStyle(fontSize: 26, color: Colors.green)),
                         ],
                       ),
                     ],
                   ),
                 ),
                 leading: request.response
-                    ? Icon(Icons.check,color: Colors.green,size: 50,)
-                    : Icon(Icons.access_alarm,color: Colors.grey,size: 50,),
+                    ? Icon(
+                        Icons.check,
+                        color: Colors.green,
+                        size: 50,
+                      )
+                    : Icon(
+                        Icons.access_alarm,
+                        color: Colors.grey,
+                        size: 50,
+                      ),
                 children: <Widget>[
                   request.response
                       ? Column(children: <Widget>[
                           compare(request.meetPoint.meetingTime,
                                   TimeOfDay.now())
-                              ? Text('It\'s up Now !',style: TextStyle(color: Colors.green[700],fontSize: 20),)
+                              ? Text(
+                                  'It\'s up Now !',
+                                  style: TextStyle(
+                                      color: Colors.green[700], fontSize: 20),
+                                )
                               : Text(
                                   'Meeting Time ${request.meetPoint.meetingTime.hour}:${request.meetPoint.meetingTime.minute}'),
                           compare(request.meetPoint.meetingTime,
@@ -191,7 +215,16 @@ class _RequestScreenState extends State<RequestScreen> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(30))),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            RequestUpdateScreen(
+                                                request: request),
+                                      ),
+                                    );
+                                  },
                                   child: Text(
                                     'Update',
                                     style: TextStyle(color: Colors.white),

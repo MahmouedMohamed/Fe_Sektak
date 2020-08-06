@@ -1,4 +1,3 @@
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/request_api.dart';
 import 'package:fe_sektak/api_callers/ride_api.dart';
 import 'package:fe_sektak/models/ride.dart';
@@ -8,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import '../main_screen.dart';
 import 'package:fe_sektak/screens/MeetingScreens/rideTime_screen.dart';
+
+import 'update_ride.dart';
 
 class RideScreen extends StatefulWidget {
   static const String id = 'Ride_Screen';
@@ -81,221 +82,249 @@ class _RideScreenState extends State<RideScreen> {
       child: ListView(
         children: rides.map((ride) {
           return Card(
-            color: Colors.white,
+              color: Colors.white,
               elevation: 5.0,
               child: ExpansionTile(
-            leading: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 84,
-                maxHeight: 84,
-              ),
-              child: CircleAvatar(
-                radius: 60,
-                backgroundImage: NetworkImage(sessionManager.getUser().uPhoto),
-              ),
-            ),
-            title: ride.available
-                ? Text(
-                    'Available ${ride.rideTime.hour}:${ride.rideTime.minute}',
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                : Text(
-                    'Not Available',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                leading: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 44,
+                    minHeight: 44,
+                    maxWidth: 84,
+                    maxHeight: 84,
                   ),
-            subtitle: FittedBox(
-              child: Row(
-                children: <Widget>[
-                  Column(
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundImage: NetworkImage(
+                        sessionManager.getUser().uPhoto.replaceAll('\\', '')),
+                  ),
+                ),
+                title: ride.available
+                    ? Text(
+                        'Available ${ride.rideTime.hour}:${ride.rideTime.minute}',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : Text(
+                        'Not Available',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                subtitle: FittedBox(
+                  child: Row(
                     children: <Widget>[
-                      Text('From'),
-                      Text('${ride.startPointLatitude.toStringAsFixed(2)}'),
-                      Text('${ride.startPointLongitude.toStringAsFixed(2)}'),
-                    ],
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 7,
-                  ),
-                  Column(
-                    children: <Widget>[
-                      Text('To'),
-                      Text('${ride.endPointLatitude.toStringAsFixed(2)}'),
-                      Text('${ride.endPointLongitude.toStringAsFixed(2)}'),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            children: <Widget>[
-              compare(ride.rideTime, TimeOfDay.now())
-                  ? RaisedButton(
-                color: Colors.green,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(30))),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RideTimeScreen(ride: ride),
+                      Column(
+                        children: <Widget>[
+                          Text(
+                            'From',
+                            style: TextStyle(color: Colors.blue),
                           ),
-                        );
-                      },
-                      child: Text(
-                        'Start the trip!',
-                        style: TextStyle(color: Colors.white),
+                          Text(
+                            '${ride.startPointLatitude.toStringAsFixed(2)}',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                          Text(
+                            '${ride.startPointLongitude.toStringAsFixed(2)}',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 7,
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Text(
+                            'To',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                          Text(
+                            '${ride.endPointLatitude.toStringAsFixed(2)}',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                          Text(
+                            '${ride.endPointLongitude.toStringAsFixed(2)}',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                children: <Widget>[
+                  compare(ride.rideTime, TimeOfDay.now())
+                      ? RaisedButton(
+                          color: Colors.green,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30))),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RideTimeScreen(ride: ride),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Start the trip!',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                      : SizedBox(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      RaisedButton(
+                        color: Colors.red,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30))),
+                        child: Text(
+                          'Delete Ride',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () async {
+                          String status = await apiRideCaller
+                              .delete(rideData: {'rideId': ride.rideId});
+                          if (status == 'done') {
+                            setState(() {});
+                          } else {
+                            Toast.show('Error', context);
+                          }
+                        },
+                      ),
+                      RaisedButton(
+                        color: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30))),
+                        child: Text(
+                          'Update Ride',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  RideUpdateScreen(ride: ride),
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                  for (int index = 0; index < ride.requests.length; index++)
+                    Card(
+                      child: Column(
+                        children: <Widget>[
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(ride
+                                .requests[index].passenger.uPhoto
+                                .replaceAll('\\', '')),
+                          ),
+                          Text('${ride.requests[index].passenger.name}'),
+                          Text('Rate : ${ride.requests[index].passenger.rate}'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Meet point: '),
+                              Text(
+                                  '${ride.requests[index].meetPoint.latitude.toStringAsFixed(2)}'),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 25,
+                              ),
+                              Text(
+                                  '${ride.requests[index].meetPoint.longitude.toStringAsFixed(2)}'),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('End Point: '),
+                              Text(
+                                  '${ride.requests[index].endPointLatitude.toStringAsFixed(2)}'),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 25,
+                              ),
+                              Text(
+                                  '${ride.requests[index].endPointLongitude.toStringAsFixed(2)}'),
+                            ],
+                          ),
+                          Text('Meeting time: '
+                              '${ride.requests[index].meetPoint.meetingTime.hour}'
+                              ':'
+                              '${ride.requests[index].meetPoint.meetingTime.minute}'),
+                          Text(
+                              'Needed seats: ${ride.requests[index].numberOfNeededSeats}'),
+                          ride.requests[index].response == true
+                              ? Text(
+                                  'Accepted',
+                                  style: TextStyle(color: Colors.green),
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    FlatButton(
+                                      child: Text(
+                                        'Delete Request',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                      onPressed: () async {
+                                        String status = await apiRequestCaller
+                                            .reject(requestData: {
+                                          'requestId':
+                                              ride.requests[index].requestId
+                                        });
+                                        if (status == 'done') {
+                                          setState(() {});
+                                        } else {
+                                          Toast.show('Error!', context);
+                                        }
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    FlatButton(
+                                      child: Text(
+                                        'Accept Request',
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                      onPressed: () async {
+                                        String status = await apiRequestCaller
+                                            .acceptRequest(requestData: {
+                                          'requestId':
+                                              ride.requests[index].requestId
+                                        }, rideData: {
+                                          'rideId': ride.rideId
+                                        });
+                                        if (status == 'done') {
+                                          setState(() {});
+                                        } else {
+                                          Toast.show('Error!', context);
+                                        }
+                                      },
+                                    )
+                                  ],
+                                ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                        ],
                       ),
                     )
-                  : SizedBox(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  RaisedButton(
-                    color: Colors.red,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(30))),
-                    child: Text(
-                      'Delete Ride',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () async {
-                      String status = await apiRideCaller
-                          .delete(rideData: {'rideId': ride.rideId});
-                      if (status == 'done') {
-                        setState(() {});
-                      } else {
-                        Toast.show('Error', context);
-                      }
-                    },
-                  ),
-                  RaisedButton(
-                    color: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(30))),
-                    child: Text(
-                      'Update Ride',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () async {},
-                  )
                 ],
-              ),
-              for (int index = 0; index < ride.requests.length; index++)
-                Card(
-                  child: Column(
-                    children: <Widget>[
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundImage:
-                            NetworkImage(ride.requests[index].passenger.uPhoto),
-                      ),
-                      Text('${ride.requests[index].passenger.name}'),
-                      Text('Rate : ${ride.requests[index].passenger.rate}'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text('Meet point: '),
-                          Text(
-                              '${ride.requests[index].meetPoint.latitude.toStringAsFixed(2)}'),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 25,
-                          ),
-                          Text(
-                              '${ride.requests[index].meetPoint.longitude.toStringAsFixed(2)}'),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text('End Point: '),
-                          Text(
-                              '${ride.requests[index].endPointLatitude.toStringAsFixed(2)}'),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 25,
-                          ),
-                          Text(
-                              '${ride.requests[index].endPointLongitude.toStringAsFixed(2)}'),
-                        ],
-                      ),
-                      Text('Meeting time: '
-                          '${ride.requests[index].meetPoint.meetingTime.hour}'
-                          ':'
-                          '${ride.requests[index].meetPoint.meetingTime.minute}'),
-                      Text(
-                          'Needed seats: ${ride.requests[index].numberOfNeededSeats}'),
-                      ride.requests[index].response == true
-                          ? Text(
-                              'Accepted',
-                              style: TextStyle(color: Colors.green),
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                FlatButton(
-                                  child: Text(
-                                    'Delete Request',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                  onPressed: () async {
-                                    String status = await apiRequestCaller.reject(requestData: {
-                                      'requestId':
-                                          ride.requests[index].requestId
-                                    });
-                                    if (status == 'done') {
-                                      print(status);
-                                      setState(() {});
-                                    } else {
-                                      Toast.show('Error!', context);
-                                    }
-                                  },
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                FlatButton(
-                                  child: Text(
-                                    'Accept Request',
-                                    style: TextStyle(color: Colors.green),
-                                  ),
-                                  onPressed: () async {
-                                    String status = await apiRequestCaller
-                                        .acceptRequest(requestData: {
-                                      'requestId':
-                                          ride.requests[index].requestId
-                                    }, rideData: {
-                                      'rideId': ride.rideId
-                                    });
-                                    if (status == 'done') {
-                                      print(status);
-                                      setState(() {});
-                                    } else {
-                                      Toast.show('Error!', context);
-                                    }
-                                  },
-                                )
-                              ],
-                            ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                    ],
-                  ),
-                )
-            ],
-          ));
+              ));
         }).toList(),
       ),
     );

@@ -287,7 +287,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ButtonTheme(
                 minWidth: MediaQuery.of(context).size.width / 2,
                 buttonColor: Colors.transparent,
-//                shape: Border(bottom: BorderSide(width: 1)),
                 child: RaisedButton(
                   elevation: 0.0,
                   onPressed: () {},

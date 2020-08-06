@@ -4,12 +4,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 
 class MarkerIcon {
-  BitmapDescriptor _markerIcon;
+  BitmapDescriptor markerIcon;
   MarkerIcon() {
     createMarkerImageFromAsset();
   }
   BitmapDescriptor getIcon() {
-    return _markerIcon;
+    return markerIcon;
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -23,14 +23,14 @@ class MarkerIcon {
   }
 
   createMarkerImageFromAsset() async {
-    final Uint8List markerIcon =
-        await getBytesFromAsset('assets/images/marker.png', 100);
-    if (_markerIcon == null) {
-      _updateBitmap(BitmapDescriptor.fromBytes(markerIcon));
+    final Uint8List loadedIcon =
+        await getBytesFromAsset('assets/images/travel-transport-hotel-vacation-holidays-tourist-tourism-travelling-traveling_54-512.png', 100);
+    if (markerIcon == null) {
+      updateBitmap(BitmapDescriptor.fromBytes(loadedIcon));
     }
   }
 
-  void _updateBitmap(BitmapDescriptor bitmap) {
-    _markerIcon = bitmap;
+  void updateBitmap(BitmapDescriptor bitmap) {
+    markerIcon = bitmap;
   }
 }

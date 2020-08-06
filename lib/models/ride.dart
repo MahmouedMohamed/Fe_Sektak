@@ -14,18 +14,15 @@ class Ride {
   TimeOfDay rideTime;
   bool available;
   bool spam;
-
-  //initial input
-  Ride({
-    this.rideId,
-    this.driver,
-    this.requests,
-    this.startPointLatitude,
-    this.startPointLongitude,
-    this.endPointLatitude,
-    this.endPointLongitude,
-    this.availableSeats,
-    this.rideTime,
-    this.available
-  });
+  Ride(
+      {this.rideId,
+      this.driver,
+      this.requests,
+      this.startPointLatitude,
+      this.startPointLongitude,
+      this.endPointLatitude,
+      this.endPointLongitude,
+      this.availableSeats,
+      this.rideTime,
+      this.available});
 }

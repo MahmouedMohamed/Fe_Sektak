@@ -45,7 +45,6 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
           onTap: (value) {
-            print(value);
             setState(() {
               index = value;
             });

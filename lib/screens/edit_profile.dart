@@ -1,11 +1,8 @@
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/user_api.dart';
 import 'package:fe_sektak/models/user.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:fe_sektak/widgets/text_field.dart';
 import 'package:flutter/material.dart';
-
-import 'RegisterationScreens/login_screen.dart';
 import 'main_screen.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -30,7 +27,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     name.text = sessionManager.getUser().name;
     phoneNumber.text = sessionManager.getUser().phoneNumber;
-    if(sessionManager.getUser().car!=null){
+    if (sessionManager.getUser().car != null) {
       carModel.text = sessionManager.getUser().car.carModel;
       carColor.text = sessionManager.getUser().car.color;
       carLicenseId.text = sessionManager.getUser().car.carLicenseId;
@@ -60,12 +57,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
           ),
           body: Container(
-//            decoration: BoxDecoration(
-//                image: DecorationImage(
-//              image: AssetImage('assets/images/background.png'),
-//              fit: BoxFit.cover,
-//            )
-//            ),
             child: SingleChildScrollView(
               padding: EdgeInsets.only(top: 10, bottom: 10),
               child: Column(
@@ -74,22 +65,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   textField(
                       'Phone Number', Colors.grey, false, null, phoneNumber),
                   textField('Car Model', Colors.grey, false, null, carModel),
-                  textField('Car License ID', Colors.grey, false, null,
-                      carLicenseId),
+                  textField(
+                      'Car License ID', Colors.grey, false, null, carLicenseId),
                   textField('Car Color', Colors.grey, false, null, carColor),
                   textField('Lincese ID', Colors.grey, false, null, licenseId),
-                  textField('Password', Colors.grey, true, null, password,
-                      null, 'Enter Your Password if No change'),
+                  textField('Password', Colors.grey, true, null, password, null,
+                      'Enter Your Password if No change'),
                   RaisedButton.icon(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     color: Colors.blueAccent,
                     onPressed: () async {
-                      print('thing ${sessionManager.getUser().id}');
-                      print('thing ${name.text}');
-                      print('thing ${password.text}');
-                      print('thing ${phoneNumber.text}');
-                      print('thing ${carModel.text.length}');
                       UserApi apiCaller = new UserApi();
                       String status = await apiCaller.update(userData: {
                         'userId': sessionManager.getUser().id,
@@ -101,15 +87,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         'licenseId': licenseId.text,
                         'carLicenseId': carLicenseId.text,
                       });
-                      if(status=='done'){
-                        User user = await apiCaller.getById(userData: {'userId' : sessionManager.getUser().id});
-                        if(user!=null){
+                      if (status == 'done') {
+                        User user = await apiCaller.getById(
+                            userData: {'userId': sessionManager.getUser().id});
+                        if (user != null) {
                           sessionManager.logout();
                           sessionManager.createSession(user);
                           sessionManager.loadSession();
                           Navigator.popAndPushNamed(context, MainPage.id);
                         }
-                      }},
+                      }
+                    },
                     icon: Icon(
                       Icons.mode_edit,
                       color: Colors.white,

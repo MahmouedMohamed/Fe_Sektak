@@ -1,6 +1,7 @@
 import 'meet_point.dart';
 import 'user.dart';
-class Request{
+
+class Request {
   String requestId;
   User passenger;
   int numberOfNeededSeats;
@@ -10,6 +11,13 @@ class Request{
   bool response;
   bool spam;
   String rideId;
-  Request({this.requestId,this.passenger, this.numberOfNeededSeats, this.response, this.endPointLatitude, this.endPointLongitude,
-      this.meetPoint,this.rideId});
+  Request(
+      {this.requestId,
+      this.passenger,
+      this.numberOfNeededSeats,
+      this.response,
+      this.endPointLatitude,
+      this.endPointLongitude,
+      this.meetPoint,
+      this.rideId});
 }

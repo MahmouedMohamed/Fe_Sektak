@@ -1,4 +1,3 @@
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/notification_api.dart';
 import 'package:fe_sektak/screens/RegisterationScreens/login_screen.dart';
 import 'package:fe_sektak/screens/RequestScreens/requestCreation_screen.dart';
@@ -7,7 +6,7 @@ import 'package:fe_sektak/session/session_manager.dart';
 import 'package:fe_sektak/screens/RideScreens/rideCreation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'notification_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -49,7 +48,6 @@ class _HomeScreenState extends State<HomeScreen>
   }
   Stream<int> refresher(Duration interval) async* {
     while (true) {
-//      print(notificationCount);
       await Future.delayed(interval);
       NotificationApi apiCaller = new NotificationApi();
       notificationCount =
@@ -132,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                   title: Text(
                     "Fe Sektak",
-                    style: TextStyle(color: Colors.black),
+                    style: GoogleFonts.delius(color: Colors.black,fontWeight: FontWeight.bold),
                   ),
                   actions: <Widget>[
                     StreamBuilder(
@@ -164,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen>
                       backgroundColor: Colors.transparent,
                       child: ClipOval(
                         child: Image.network(
-                          sessionManager.getUser().uPhoto,
+                          sessionManager.getUser().uPhoto.replaceAll('\\', ''),
                           fit: BoxFit.fill,
                           width: 150,
                           height: 150,
@@ -176,10 +174,9 @@ class _HomeScreenState extends State<HomeScreen>
                       child: Text(
                         'Welcome, ${sessionManager.getUser().name}!',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 25,
-                            letterSpacing: 1),
+                        style: GoogleFonts.delius(
+                            color: Colors.black,
+                            fontSize: 25),
                       ),
                     ),
                     Column(
@@ -202,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   highlightColor: Colors.blue,
                                   colorBrightness: Brightness.light,
                                   child: Text('Looking for a Ride?',
-                                      style: TextStyle(
+                                      style: GoogleFonts.delius(
                                           color: Colors.white,
                                           fontSize: 20,
                                           letterSpacing: 1.5,
@@ -231,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     highlightColor: Colors.blue,
                                     colorBrightness: Brightness.light,
                                     child: Text('Start a Ride!',
-                                        style: TextStyle(
+                                        style: GoogleFonts.delius(
                                             color: Colors.white,
                                             fontSize: 20,
                                             letterSpacing: 1.5,
@@ -283,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen>
                         backgroundColor: Colors.transparent,
                         child: ClipOval(
                           child: Image.network(
-                            sessionManager.getUser().uPhoto,
+                            sessionManager.getUser().uPhoto.replaceAll('\\', ''),
                             fit: BoxFit.fill,
                             width: 120,
                             height: 120,

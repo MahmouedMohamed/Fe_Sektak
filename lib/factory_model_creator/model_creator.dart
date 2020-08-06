@@ -7,7 +7,7 @@ import 'package:fe_sektak/models/user.dart';
 import 'package:flutter/material.dart';
 
 class ModelCreator {
-  User getUserFromJson(json){
+  User getUserFromJson(json) {
     return new User(
       id: json['id'].toString(),
       nationalId: json['nationalId'],
@@ -17,13 +17,12 @@ class ModelCreator {
       rate: double.parse(json['profile']['rate'].toString()),
       numberOfServices: int.parse(json['profile']['services'].toString()),
       totalReview: double.parse(json['profile']['totalReview'].toString()),
-      car: json['car'] == null
-          ? null
-          : getCarFromJson(json['car']),
+      car: json['car'] == null ? null : getCarFromJson(json['car']),
       uPhoto: json['profile']['picture'].toString(),
     );
   }
-  Car getCarFromJson(json){
+
+  Car getCarFromJson(json) {
     return Car(
       json['license'],
       json['carModel'],
@@ -31,10 +30,10 @@ class ModelCreator {
       json['userLicense'],
     );
   }
+
   List<CustomNotification> getNotificationsFromJson(json) {
     List<CustomNotification> notifications = new List<CustomNotification>();
     json['notifications'].forEach((notification) {
-      print(notification['data']);
       notifications.add(CustomNotification(
           notifyingUser: notification['data']['user'].toString(),
           eventId: notification['data']['requestId'] == null
@@ -53,6 +52,7 @@ class ModelCreator {
     List<String> array = time.toString().split(':');
     return TimeOfDay(hour: int.parse(array[0]), minute: int.parse(array[1]));
   }
+
   List<Ride> getRidesFromJson(json) {
     List<Ride> rides = new List<Ride>();
     json.forEach((ride) {
@@ -65,10 +65,11 @@ class ModelCreator {
           rideTime: getTime(ride['time']),
           rideId: ride['id'].toString(),
           available: ride['available'] == 1 ? true : false,
-      driver: User(id: ride['user_id'].toString())));
+          driver: User(id: ride['user_id'].toString())));
     });
     return rides;
   }
+
   List<Request> getRequestsFromJson(json) {
     List<Request> returnedRequests = new List<Request>();
     json.forEach((request) {
