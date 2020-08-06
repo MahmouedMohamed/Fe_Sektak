@@ -1,4 +1,3 @@
-import 'package:fe_sektak/api_callers/api_caller.dart';
 import 'package:fe_sektak/api_callers/request_api.dart';
 import 'package:fe_sektak/api_callers/ride_api.dart';
 import 'package:fe_sektak/session/session_manager.dart';
@@ -23,24 +22,27 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
   RideApi apiRideCaller = new RideApi();
   List<Ride> rides;
   SessionManager sessionManager = new SessionManager();
+  double cost = 0;
+
   @override
   void initState() {
     super.initState();
   }
 
-  Future<List<Ride>> getRides() async {
-    List<Ride> rides =
-        await apiRideCaller.get(requestData: {'requestId': request.requestId});
-    return rides;
+  Future<List<dynamic>> getRides() async {
+    List<dynamic> returnedItems =
+        await apiRideCaller.getAvailableRides(requestData: {'requestId': request.requestId});
+    return returnedItems;
   }
 
   Widget showRides() {
-    return FutureBuilder<List<Ride>>(
+    return FutureBuilder<List<dynamic>>(
       future: getRides(),
-      builder: (BuildContext context, AsyncSnapshot<List<Ride>> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data != null) {
-          rides = snapshot.data;
+          rides = snapshot.data[0];
+          cost = double.parse(snapshot.data[1]);
           return showBody();
         } else if (snapshot.error != null) {
           return Container(
@@ -65,6 +67,14 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
       height: double.infinity,
       child: ListView(
         children: <Widget>[
+          Container(
+            child: Text('That request might cost you $cost, Hope you enjoy it',style: TextStyle(color: Colors.white)),
+            decoration: BoxDecoration(
+              color: Colors.redAccent,
+            ),
+            margin: EdgeInsets.only(top: 10,bottom: 10,right: 5,left: 5),
+            padding: EdgeInsets.only(top: 3,bottom: 3,right: 3,left: 3),
+          ),
           Column(
             children: rides.map((ride) {
               return Card(
@@ -156,6 +166,7 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          title: Text('Ride Selection'),
           leading: BackButton(
             onPressed: () {
               Navigator.popAndPushNamed(context, MainPage.id);
