@@ -89,7 +89,7 @@ class _RequestCreationState extends State<RequestCreation>
           leading: BackButton(
             onPressed: () => Navigator.popAndPushNamed(context, MainPage.id),
           ),
-          title: Text('Ride Creation'),
+          title: Text('Request Creation'),
           actions: <Widget>[
             Padding(
                 padding: EdgeInsets.only(top: 10, right: 10),
@@ -260,7 +260,7 @@ class _RequestCreationState extends State<RequestCreation>
         return new Theme(
             data: ThemeData.dark(),
             child: NumberPickerDialog.integer(
-                minValue: 0,
+                minValue: 1,
                 maxValue: 4,
                 step: 1,
                 initialIntegerValue: currentIntValue,

@@ -13,7 +13,7 @@ class UserApi {
       'phoneNumber': userData['phoneNumber'].toString(),
       'nationalId': userData['nationalId'].toString(),
     };
-    if (carData['carLicenseId'] != '' || carData['licenceId'] != '') {
+    if (carData['carLicenseId'] != '' || userData['licenceId'] != '') {
       body.addAll({
         'car[license]': carData['carLicenseId'].toString(),
         'car[model]': carData['carModel'],
