@@ -4,9 +4,9 @@
 *4-notification
 *5-update ride and update request
 *6-Clean code, update api naming
-7-ui upgrade + tests +some documention
-8-there is time? add some features..
-features : *notifications using database & *stream,
+7-ui upgrade + tests +some documention + verification
+*8-there is time? add some features..
+*features : *notifications using database & *stream,
 	   profile photos 
 *Error Handling 
 *Cancel request, ride.

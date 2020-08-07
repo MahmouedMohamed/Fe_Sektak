@@ -99,7 +99,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     Visibility(
                       child: Column(
                         children: <Widget>[
-                          textField('Licence ID', Colors.yellow, false, null,
+                          textField('Licence ID', Colors.yellow, false, TextInputType.number,
                               controllers[8], errors[8], Icons.credit_card),
                           textField(
                               'Car License ID',

@@ -5,25 +5,18 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 import 'package:fe_sektak/main.dart';
+import 'package:fe_sektak/screens/home_screen.dart';
+import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(FeSektak());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+//  testWidgets('MyWidget has a title and message', (WidgetTester tester) async {
+//    SessionManager sessionManager = new SessionManager();
+//    await sessionManager.loadSession();
+//    await tester.pumpWidget(HomeScreen());
+//    final titleFinder = find.widgetWithText(Text,'Looking for a Ride?');
+////    expect(find.byType('0'), findsOneWidget);
+//  });
 }
