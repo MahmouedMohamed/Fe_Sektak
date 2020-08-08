@@ -90,7 +90,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         'licenseId': controllers[5].text,
                         'carLicenseId': controllers[4].text,
                       });
-                      if (status == 'done') {
+                      if (status.toString() == 'done') {
                         User user = await apiCaller.getById(
                             userData: {'userId': sessionManager.getUser().id});
                         if (user != null) {

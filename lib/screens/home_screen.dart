@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 child: ButtonTheme(
                                   child: RaisedButton(
                                     onPressed: () => {
-                                      Navigator.popAndPushNamed(
+                                      Navigator.pushNamed(
                                           context, RideCreation.id)
                                     },
                                     color: Colors.lightBlue[200],

@@ -24,7 +24,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   @override
   void initState() {
     super.initState();
-    initList();
+    driverId == null ? initList() : rates.add(0);
   }
 
   void initList() {
@@ -56,7 +56,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           setState(() {
                             if (step + 1 >= ride.requests.length) {
                               Navigator.popAndPushNamed(context, MainPage.id);
-                            }else {
+                            } else {
                               step++;
                             }
                           });
@@ -66,9 +66,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
                       steps: [
                     for (int index = 0; index < ride.requests.length; index++)
                       Step(
-                          title: Text('Passenger Name : '+
+                          title: Text('Passenger Name : ' +
                               ride.requests.elementAt(index).passenger.name),
-                          subtitle: Text('His Total Review Before Ride \n ${ride.requests.elementAt(index).passenger.totalReview.toStringAsFixed(2)}'),
+                          subtitle: Text(
+                              'His Total Review Before Ride \n ${ride.requests.elementAt(index).passenger.totalReview.toStringAsFixed(2)}'),
                           content: Container(
                               child: DropdownButton<int>(
                             hint: Text("Select rate"),
@@ -96,7 +97,47 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   ])))
           : Container(
               color: Colors.blue,
-            ),
+              child: Stepper(
+                  onStepContinue: () async {
+                    ReviewApi apiCaller = new ReviewApi();
+                    String status = await apiCaller.create(
+                        userData: {'userId': driverId, 'rate': rates[step]});
+                    if (status == 'done') {
+                      setState(() {
+                        Navigator.popAndPushNamed(context, MainPage.id);
+                      });
+                    }
+                  },
+                  currentStep: step,
+                  steps: [
+                    for (int index = 0; index < 1; index++)
+                      Step(
+                          content: Container(
+                              child: DropdownButton<int>(
+                            hint: Text("Select rate"),
+                            value: rates[index],
+                            onChanged: (int value) {
+                              setState(() {
+                                rates[index] = value;
+                              });
+                            },
+                            items:
+                                List.generate(availableRates.length, (index) {
+                              return DropdownMenuItem<int>(
+                                  value: availableRates[index],
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text('Rate: '),
+                                      Text(
+                                        availableRates[index].toString(),
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ],
+                                  ));
+                            }),
+                          )),
+                          title: Text(''))
+                  ])),
     );
   }
 }

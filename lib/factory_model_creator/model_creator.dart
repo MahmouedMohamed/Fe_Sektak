@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 class ModelCreator {
   User getUserFromJson(json) {
+    print('thing x $json');
     return new User(
       id: json['id'].toString(),
       nationalId: json['nationalId'],
@@ -17,7 +18,7 @@ class ModelCreator {
       rate: double.parse(json['profile']['rate'].toString()),
       numberOfServices: int.parse(json['profile']['services'].toString()),
       totalReview: double.parse(json['profile']['totalReview'].toString()),
-      car: json['car'] == null ? null : getCarFromJson(json['car']),
+      car: json['car'] == null || json['car'] == 'null' ? null : getCarFromJson(json['car']),
       uPhoto: json['profile']['picture'].toString(),
     );
   }

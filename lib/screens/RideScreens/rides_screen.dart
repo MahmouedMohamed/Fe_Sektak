@@ -180,7 +180,7 @@ class _RideScreenState extends State<RideScreen> {
                         )
                       : SizedBox(),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       RaisedButton(
                         color: Colors.red,
@@ -201,6 +201,7 @@ class _RideScreenState extends State<RideScreen> {
                           }
                         },
                       ),
+                      ride.requests.length==0?
                       RaisedButton(
                         color: Colors.blue,
                         shape: RoundedRectangleBorder(
@@ -219,7 +220,7 @@ class _RideScreenState extends State<RideScreen> {
                             ),
                           );
                         },
-                      )
+                      ):SizedBox()
                     ],
                   ),
                   for (int index = 0; index < ride.requests.length; index++)

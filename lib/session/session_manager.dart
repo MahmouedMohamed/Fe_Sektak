@@ -22,6 +22,7 @@ class SessionManager {
     list[0] = list[0].substring(1);
     list[list.length - 1] =
         list[list.length - 1].substring(0, list[list.length - 1].length - 1);
+
     user = new User(
         id: userData[0],
         nationalId: userData[1],
@@ -31,7 +32,7 @@ class SessionManager {
         rate: double.parse(userData[5]),
         numberOfServices: int.parse(userData[6]),
         totalReview: double.parse(userData[7]),
-        car: Car(list[0], list[1], list[2], list[3]),
+        car: list[0]==null || list[0]=='null' ? null: Car(list[0], list[1], list[2], list[3]),
         uPhoto: userData[9]);
   }
 

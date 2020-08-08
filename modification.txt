@@ -13,6 +13,8 @@
 
 we used git, flutter, laravel, pusher, google maps, 
 
+Ask about documentation cause we gonna deliver it at sunday
+ERD , Sequence, update functional add notification...
     *Route::post('/register', 'UserController@register');
     *Route::get('/showNotifications', 'NotificationController@showNotifications');
     *Route::get('/getUnReadNotificationsCount', 'NotificationController@getUnReadNotificationsCount');
