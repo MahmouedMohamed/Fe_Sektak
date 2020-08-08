@@ -68,7 +68,7 @@ class NotificationScreen extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(5))),
                   child: ListTile(
                     title: Text(
-                      '${notification.type} from ${notification.notifyingUser} to ${notification.eventId}',
+                      '${notification.type} from ${notification.notifyingUser}',
                       style: TextStyle(
                         color: Colors.blue,
                         fontSize: 16.0,

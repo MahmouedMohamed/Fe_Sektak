@@ -17,7 +17,6 @@ class RequestApi {
     };
     var response = await http.post(Uri.encodeFull(URL + 'request'),
         headers: {"Accpet": "application/json"}, body: body);
-    print('thing ${response.body}');
     if (response.statusCode != 200) {
       return null;
     } else {

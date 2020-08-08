@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 
 class ModelCreator {
   User getUserFromJson(json) {
-    print('thing x $json');
     return new User(
       id: json['id'].toString(),
       nationalId: json['nationalId'],
