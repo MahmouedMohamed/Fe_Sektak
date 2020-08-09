@@ -4,10 +4,12 @@ import 'package:fe_sektak/models/ride.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:toast/toast.dart';
 import '../main_screen.dart';
 import 'package:fe_sektak/screens/MeetingScreens/rideTime_screen.dart';
 
+import '../show_markers_screen.dart';
 import 'update_ride.dart';
 
 class RideScreen extends StatefulWidget {
@@ -98,7 +100,8 @@ class _RideScreenState extends State<RideScreen> {
                         sessionManager.getUser().uPhoto.replaceAll('\\', '')),
                   ),
                 ),
-                title: ride.available
+                title: Text('Ride #${ride.rideId}'),
+                subtitle: ride.available
                     ? Text(
                         'Available ${ride.rideTime.hour}:${ride.rideTime.minute}',
                         style: TextStyle(
@@ -115,48 +118,27 @@ class _RideScreenState extends State<RideScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                subtitle: FittedBox(
-                  child: Row(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Text(
-                            'From',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                          Text(
-                            '${ride.startPointLatitude.toStringAsFixed(2)}',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                          Text(
-                            '${ride.startPointLongitude.toStringAsFixed(2)}',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 7,
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Text(
-                            'To',
-                            style: TextStyle(color: Colors.green),
-                          ),
-                          Text(
-                            '${ride.endPointLatitude.toStringAsFixed(2)}',
-                            style: TextStyle(color: Colors.green),
-                          ),
-                          Text(
-                            '${ride.endPointLongitude.toStringAsFixed(2)}',
-                            style: TextStyle(color: Colors.green),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
                 children: <Widget>[
+                  RaisedButton(
+                      color: Colors.amber,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ShowMarkersScreen(
+                                first: LatLng(ride.startPointLatitude,
+                                    ride.startPointLongitude),
+                                second: LatLng(ride.endPointLatitude,
+                                    ride.endPointLongitude)),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Show My Ride Info on map',
+                        style: TextStyle(color: Colors.black),
+                      )),
                   compare(ride.rideTime, TimeOfDay.now())
                       ? RaisedButton(
                           color: Colors.green,
@@ -201,26 +183,27 @@ class _RideScreenState extends State<RideScreen> {
                           }
                         },
                       ),
-                      ride.requests.length==0?
-                      RaisedButton(
-                        color: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(30))),
-                        child: Text(
-                          'Update Ride',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RideUpdateScreen(ride: ride),
-                            ),
-                          );
-                        },
-                      ):SizedBox()
+                      ride.requests.length == 0
+                          ? RaisedButton(
+                              color: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30))),
+                              child: Text(
+                                'Update Ride',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RideUpdateScreen(ride: ride),
+                                  ),
+                                );
+                              },
+                            )
+                          : SizedBox()
                     ],
                   ),
                   for (int index = 0; index < ride.requests.length; index++)
@@ -269,34 +252,40 @@ class _RideScreenState extends State<RideScreen> {
                               'Needed seats: ${ride.requests[index].numberOfNeededSeats}'),
                           ride.requests[index].response == true
                               ? Column(
-                            children: <Widget>[
-                              Text(
-                                'Accepted',
-                                style: TextStyle(color: Colors.green),
-                              ),
-                              !compare(ride.rideTime, TimeOfDay.now())?
-                              FlatButton(
-                                color: Colors.grey,
-                                child: Text(
-                                  'Cancel Request',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                onPressed: () async {
-                                  String status = await apiRequestCaller
-                                      .cancel(requestData: {
-                                    'requestId':
-                                    ride.requests[index].requestId
-                                  },userData: {'userId' : sessionManager.getUser().id});
-                                  if (status == 'done') {
-                                    setState(() {});
-                                  } else {
-                                    Toast.show('Error!', context);
-                                  }
-                                },
-                              ):
-                              SizedBox(),
-                            ],
-                          ) : Row(
+                                  children: <Widget>[
+                                    Text(
+                                      'Accepted',
+                                      style: TextStyle(color: Colors.green),
+                                    ),
+                                    !compare(ride.rideTime, TimeOfDay.now())
+                                        ? FlatButton(
+                                            color: Colors.grey,
+                                            child: Text(
+                                              'Cancel Request',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            onPressed: () async {
+                                              String status =
+                                                  await apiRequestCaller
+                                                      .cancel(requestData: {
+                                                'requestId': ride
+                                                    .requests[index].requestId
+                                              }, userData: {
+                                                'userId':
+                                                    sessionManager.getUser().id
+                                              });
+                                              if (status == 'done') {
+                                                setState(() {});
+                                              } else {
+                                                Toast.show('Error!', context);
+                                              }
+                                            },
+                                          )
+                                        : SizedBox(),
+                                  ],
+                                )
+                              : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     FlatButton(

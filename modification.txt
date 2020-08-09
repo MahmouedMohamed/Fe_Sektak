@@ -15,7 +15,15 @@ we used git, flutter, laravel, pusher, google maps,
 
 Ask about documentation cause we gonna deliver it at sunday
 ERD , Sequence, update functional add notification...
-
+بص اللي انا فاهمه لحد دلوقتي إن 
+احنا المفترض هنخلص الكود بالتيست كيسز و كله
+هنعمل الدكيومنتيشن و نخلصه
+هنسلم الدكيومنتيشن قبل يوم 12/8 للاكونت ده اونلاين eg.edu.cu-fci@moukhtar.b و هنكتب كود المشروع في subject اللي هو هيبقي SUN04_02
+إن شاء الله
+هنروح الكلية نودي نسخة ورق من الدكيومنتيشن و cd عليه الكود و الدكيومنتيشن بردو قبل يوم 13/8
+هنتواصل مع المعيدة م:ماهيتاب سعدونى  و ده الاكونت بتاعها m.saadony@fci-cu.edu.eg
+عشان هنناقش الكود يوم 12/8
+هنناقش المشروع إن شاء الله يوم الاحد 16/8 من الساعة 10الصبح لحد الساعة 12
     *Route::post('/register', 'UserController@register');
     *Route::get('/showNotifications', 'NotificationController@showNotifications');
     *Route::get('/getUnReadNotificationsCount', 'NotificationController@getUnReadNotificationsCount');

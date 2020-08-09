@@ -5,12 +5,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fe_sektak/models/ride.dart';
 import 'package:fe_sektak/models/request.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../main_screen.dart';
+import '../show_markers_screen.dart';
 
 class RideSelectionScreen extends StatefulWidget {
   static const String id = 'Ride_Selection';
   final Request request;
-  const RideSelectionScreen({Key key, @required this.request}) : super(key: key);
+  const RideSelectionScreen({Key key, @required this.request})
+      : super(key: key);
 
   @override
   _RideSelectionScreen createState() => _RideSelectionScreen(request);
@@ -30,8 +33,8 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
   }
 
   Future<List<dynamic>> getRides() async {
-    List<dynamic> returnedItems =
-        await apiRideCaller.getAvailableRides(requestData: {'requestId': request.requestId});
+    List<dynamic> returnedItems = await apiRideCaller
+        .getAvailableRides(requestData: {'requestId': request.requestId});
     return returnedItems;
   }
 
@@ -68,12 +71,13 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
       child: ListView(
         children: <Widget>[
           Container(
-            child: Text('That request might cost you $cost, Hope you enjoy it',style: TextStyle(color: Colors.white)),
+            child: Text('That request might cost you $cost, Hope you enjoy it',
+                style: TextStyle(color: Colors.white)),
             decoration: BoxDecoration(
               color: Colors.redAccent,
             ),
-            margin: EdgeInsets.only(top: 10,bottom: 10,right: 5,left: 5),
-            padding: EdgeInsets.only(top: 3,bottom: 3,right: 3,left: 3),
+            margin: EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
+            padding: EdgeInsets.only(top: 3, bottom: 3, right: 3, left: 3),
           ),
           Column(
             children: rides.map((ride) {
@@ -88,7 +92,8 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
                   ),
                   child: CircleAvatar(
                     radius: 60,
-                    backgroundImage: NetworkImage(ride.driver.uPhoto.replaceAll('\\', '')),
+                    backgroundImage:
+                        NetworkImage(ride.driver.uPhoto.replaceAll('\\', '')),
                   ),
                 ),
                 title: Text(
@@ -100,37 +105,42 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
                   ),
                 ),
                 subtitle: FittedBox(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
                     children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Text('From'),
-                          Text('${ride.startPointLatitude.toStringAsFixed(2)}'),
-                          Text(
-                              '${ride.startPointLongitude.toStringAsFixed(2)}'),
-                        ],
+                      Text(
+                        'Rate : ${ride.driver.rate}',
+                        style: TextStyle(color: Colors.amber),
                       ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 6,
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Text('To'),
-                          Text('${ride.endPointLatitude.toStringAsFixed(2)}'),
-                          Text('${ride.endPointLongitude.toStringAsFixed(2)}'),
-                        ],
-                      ),
+                      Text('Total Review : ${ride.driver.totalReview}'),
+                      Text(
+                          'Number Of Services : ${ride.driver.numberOfServices}'),
                     ],
                   ),
                 ),
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text('Rate : ${ride.driver.rate}',style: TextStyle(color: Colors.amber),),
-                      Text('Total Review : ${ride.driver.totalReview}'),
-                      Text('Number Of Services : ${ride.driver.numberOfServices}'),
+                      RaisedButton(
+                          color: Colors.amber,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30))),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowMarkersScreen(
+                                    first: LatLng(ride.startPointLatitude,
+                                        ride.startPointLongitude),
+                                    second: LatLng(ride.endPointLatitude,
+                                        ride.endPointLongitude)),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Show This Ride Info on map',
+                            style: TextStyle(color: Colors.black),
+                          )),
                       FlatButton(
                         child: Text(
                           'Send Request',
@@ -140,12 +150,8 @@ class _RideSelectionScreen extends State<RideSelectionScreen> {
                           RequestApi apiRequestCaller = new RequestApi();
                           request.rideId = ride.rideId;
                           String status = await apiRequestCaller.sendRequest(
-                              requestData: {
-                                'requestId': request.requestId
-                              },
-                              rideData: {
-                                'rideId': ride.rideId
-                              });
+                              requestData: {'requestId': request.requestId},
+                              rideData: {'rideId': ride.rideId});
                           if (status == 'done') {
                             Navigator.popAndPushNamed(context, MainPage.id);
                           }

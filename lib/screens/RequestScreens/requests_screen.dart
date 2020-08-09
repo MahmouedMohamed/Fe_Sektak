@@ -3,12 +3,14 @@ import 'package:fe_sektak/models/request.dart';
 import 'package:fe_sektak/session/session_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:toast/toast.dart';
 
 import '../main_screen.dart';
 import 'package:fe_sektak/screens/MeetingScreens/meetTime_screen.dart';
 import 'package:fe_sektak/screens/RideScreens/ride_selector.dart';
 
+import '../show_markers_screen.dart';
 import 'update_request.dart';
 
 class RequestScreen extends StatefulWidget {
@@ -96,35 +98,11 @@ class _RequestScreenState extends State<RequestScreen> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          Text('Meeting point',
-                              style:
-                                  TextStyle(fontSize: 26, color: Colors.blue)),
-                          Text(
-                              '${request.meetPoint.latitude.toStringAsFixed(2)}',
-                              style:
-                                  TextStyle(fontSize: 26, color: Colors.blue)),
-                          Text(
-                              '${request.meetPoint.longitude.toStringAsFixed(2)}',
-                              style:
-                                  TextStyle(fontSize: 26, color: Colors.blue)),
-                        ],
+                          Text('Request #${request.requestId}'),
+                          ],
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 6,
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Text('Destination',
-                              style:
-                                  TextStyle(fontSize: 26, color: Colors.green)),
-                          Text('${request.endPointLatitude.toStringAsFixed(2)}',
-                              style:
-                                  TextStyle(fontSize: 26, color: Colors.green)),
-                          Text(
-                              '${request.endPointLongitude.toStringAsFixed(2)}',
-                              style:
-                                  TextStyle(fontSize: 26, color: Colors.green)),
-                        ],
                       ),
                     ],
                   ),
@@ -141,6 +119,23 @@ class _RequestScreenState extends State<RequestScreen> {
                         size: 50,
                       ),
                 children: <Widget>[
+                  RaisedButton(
+                      color: Colors.amber,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(30))),
+                      onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ShowMarkersScreen(first: LatLng(request.meetPoint.latitude,request.meetPoint.longitude),
+                                    second: LatLng(request.endPointLatitude,request.endPointLongitude)),
+                          ),
+                        );
+                      },
+                      child: Text('Show My Request Info on map',style: TextStyle(color: Colors.black),)
+                  ),
                   request.response
                       ? Column(children: <Widget>[
                           compare(request.meetPoint.meetingTime,
