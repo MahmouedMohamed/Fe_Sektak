@@ -50,10 +50,14 @@ class UserApi {
             'login?email=${userData['email']}&password=${userData['password']}'),
         headers: {"Accpet": "application/json"});
     var convertDataToJson = jsonDecode(response.body);
-    if (response.statusCode != 200 || convertDataToJson['error']!=null) {
+    if (response.statusCode != 200) {
       return null;
     } else {
-      return modelCreator.getUserFromJson(convertDataToJson['user']);
+      if(convertDataToJson['error']==null){
+        return {'type' : 'User' , 'data' : modelCreator.getUserFromJson(convertDataToJson['user'])};
+      }else{
+        return {'type': 'Error', 'data' :  convertDataToJson['error']};
+      }
     }
   }
 

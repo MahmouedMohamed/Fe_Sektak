@@ -84,18 +84,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
                                 onPressed: () async {
-                                  User user = await apiCaller.login(userData: {
+                                  dynamic user = await apiCaller.login(userData: {
                                     'email': email.text,
                                     'password': password.text
                                   });
-                                  if (user != null) {
-                                    sessionManager.createSession(user);
+                                  if (user['type'] == 'User') {
+                                    sessionManager.createSession(user['data']);
                                     Navigator.popAndPushNamed(
                                         context, MainPage.id);
                                   }
                                   else{
                                     setState(() {
-                                      error = 'Your info seems not alright! 😕';
+                                      error = user['data'];
                                     });
                                   }
                                 },

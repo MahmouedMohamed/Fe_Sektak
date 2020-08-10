@@ -122,10 +122,6 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
         FlatButton(
             child: Text("Press here if you saw him!"),
             onPressed: () async {
-              RequestApi apiCaller = new RequestApi();
-              String status = await apiCaller
-                  .delete(requestData: {'requestId': request.requestId});
-              if (status == 'done') {
                 setState(() {
                   inRide = true;
                   Marker marker = markers.elementAt(0).copyWith(
@@ -136,7 +132,6 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
                   markers.clear();
                   markers.add(marker);
                 });
-              }
             }),
         FlatButton(
           child: Text(
@@ -158,7 +153,7 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
     while (calculateDistance(userLocation.getLatLng(),
                 LatLng(request.endPointLatitude, request.endPointLongitude)) *
             1000 >
-        10) {
+        30) {
       await userLocation.getUserLocation();
     }
     return AlertDialog(
@@ -197,9 +192,10 @@ class _MeetTimeScreenState extends State<MeetTimeScreen> {
             snapshot.data != null) {
           return snapshot.data;
         } else if (snapshot.error != null) {
+          getAcquiringWidget();
           return Container(
             alignment: Alignment.center,
-            child: Text('Error ${snapshot.error}'),
+//            child: Text('Error ${snapshot.error}'),
           );
         } else {
           return SizedBox();
